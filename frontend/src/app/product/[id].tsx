@@ -71,7 +71,7 @@ export default function ProductScreen() {
     ...all.filter((p) => p.id !== product.id && p.category !== product.category && p.featured),
   ].slice(0, 6);
 
-  const addToBag = () => addToCart(product, { variant, quantity, imageFrame: galleryRef });
+  const addToBag = (origin: Parameters<typeof addToCart>[1]['origin']) => addToCart(product, { variant, quantity, origin });
 
   const topBar = (
     <View className="absolute inset-x-0 top-0 z-10" style={{ paddingTop: insets.top }}>

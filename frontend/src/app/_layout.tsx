@@ -46,8 +46,8 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
-          <FlyToBagProvider>
           <LovePopProvider>
+          <FlyToBagProvider>
           <Stack
             screenOptions={{
               headerShown: false,
@@ -64,8 +64,8 @@ export default function RootLayout() {
           </Stack>
           <SessionGuard />
           <ToastHost />
-          </LovePopProvider>
           </FlyToBagProvider>
+          </LovePopProvider>
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

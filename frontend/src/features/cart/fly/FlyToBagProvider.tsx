@@ -11,22 +11,15 @@ export interface Point {
   y: number;
 }
 
-export interface Rect extends Point {
-  width: number;
-  height: number;
-}
-
 type ViewRef = RefObject<ComponentRef<typeof View> | null>;
 
 interface LaunchOptions {
-  /** The product's image frame on screen (window coordinates). */
-  from: Rect;
-  /** What flies — the product photo, rendered to fill the frame. */
+  /** Where the flight starts, in window coordinates (centre of the Add button). */
+  from: Point;
+  /** Small round picture of the product that flies. */
   visual: ReactNode;
   /** Bag to land in; defaults to the floating bag. */
   target?: ViewRef;
-  /** The product in flight (its card dims while it's away). */
-  productId?: string;
   /** Runs when the product drops into the bag (add to cart here). */
   onLand?: () => void;
 }
@@ -38,36 +31,38 @@ interface FlyContext {
 
 const Ctx = createContext<FlyContext | null>(null);
 
-const FLIGHT_MS = 1550;
-/** First part of the flight: the product lifts gently out of its frame. */
-const LIFT = 0.2;
-/** Size the product has when it reaches the bag's mouth, before dropping in. */
-const ARRIVAL_SIZE = 46;
-/** Last part of the flight: the product sinks into the bag (which is drawn above it). */
-const SINK = 0.16;
+/** Size of the flying thumbnail. */
+export const THUMB = 46;
+const FLIGHT_MS = 900;
 
-const measure = (ref: ViewRef) =>
-  new Promise<Rect | null>((resolve) => {
+const measureCentre = (ref: ViewRef) =>
+  new Promise<Point | null>((resolve) => {
     if (!ref.current) return resolve(null);
-    ref.current.measureInWindow((x, y, width, height) => resolve(width || height ? { x, y, width, height } : null));
+    ref.current.measureInWindow((x, y, width, height) => resolve(width ? { x: x + width / 2, y: y + height / 2 } : null));
   });
 
 /**
- * "Watch it go into the bag": the product photo lifts out of its card, then
- * glides along a soft arc into the bag, shrinking as it travels. The bag
- * swells as it lands and a soft pop plays.
+ * A small round picture of the product pops out of the Add button, glides up
+ * along a soft arc and drops into the bag, which swells as it lands.
+ *
+ * Android notes: the flying view is mounted once and stays mounted (views
+ * mounted on tap inside an overlay were not drawn), and the worklet reads
+ * only numbers from shared values.
  */
 export function FlyToBagProvider({ children }: { children: ReactNode }) {
   const floatingTarget = useRef<ComponentRef<typeof View>>(null);
-  const [flight, setFlight] = useState<{ from: Rect; to: Point; visual: ReactNode } | null>(null);
+  const [visual, setVisual] = useState<ReactNode>(null);
   const pending = useRef<(() => void) | undefined>(undefined);
   const t = useSharedValue(0);
+  const x0 = useSharedValue(0);
+  const y0 = useSharedValue(0);
+  const x1 = useSharedValue(0);
+  const y1 = useSharedValue(0);
   const drop = useAudioPlayer(require('@assets/sounds/drop.wav'));
 
   const land = useCallback(() => {
     pending.current?.();
     pending.current = undefined;
-    setFlight(null);
     useBagFx.getState().land();
     try {
       drop.seekTo(0);
@@ -78,56 +73,38 @@ export function FlyToBagProvider({ children }: { children: ReactNode }) {
   }, [drop]);
 
   const launch = useCallback(
-    async ({ from, visual, target, productId, onLand }: LaunchOptions) => {
+    async ({ from, visual: picture, target, onLand }: LaunchOptions) => {
       if (pending.current) land();
-      const bag = await measure(target ?? floatingTarget);
-      const to = bag ? { x: bag.x + bag.width / 2, y: bag.y + bag.height / 2 } : { x: from.x + from.width, y: 40 };
-
+      const bag = await measureCentre(target ?? floatingTarget);
       pending.current = onLand;
-      useBagFx.getState().setFlying(productId ?? null);
-      setFlight({ from, to, visual });
+      setVisual(picture);
+      x0.value = from.x;
+      y0.value = from.y;
+      x1.value = bag?.x ?? from.x;
+      y1.value = bag?.y ?? 60;
       t.value = 0;
-      t.value = withTiming(1, { duration: FLIGHT_MS, easing: Easing.linear }, (done) => {
+      t.value = withTiming(1, { duration: FLIGHT_MS, easing: Easing.bezier(0.45, 0, 0.25, 1) }, (done) => {
         if (done) runOnJS(land)();
       });
     },
-    [land, t],
+    [land, t, x0, y0, x1, y1],
   );
 
   const style = useAnimatedStyle(() => {
-    if (!flight) return { opacity: 0 };
-    const { from, to } = flight;
-    const p = t.value;
-    const lift = Math.min(p / LIFT, 1);
-    const travelEnd = 1 - SINK;
-    const raw = Math.min(1, Math.max(0, (p - LIFT) / (travelEnd - LIFT)));
-    const sink = Math.max(0, (p - travelEnd) / SINK);
-    // Ease-in-out cubic: starts unhurried, glides, settles softly.
-    const k = raw < 0.5 ? 4 * raw * raw * raw : 1 - Math.pow(-2 * raw + 2, 3) / 2;
-    const liftEase = 1 - Math.pow(1 - lift, 3);
-
-    const x0 = from.x + from.width / 2;
-    const y0 = from.y + from.height / 2;
-    // Control point above both ends gives a graceful arc.
-    const cx = x0 + (to.x - x0) * 0.25;
-    const cy = Math.min(y0, to.y) - 120;
-    const x = (1 - k) * (1 - k) * x0 + 2 * (1 - k) * k * cx + k * k * to.x;
-    const y = (1 - k) * (1 - k) * y0 + 2 * (1 - k) * k * cy + k * k * to.y;
-
-    const arrival = ARRIVAL_SIZE / from.width;
-    // Travel: shrink to the bag's mouth. Sink: keep shrinking as it drops inside.
-    const travelScale = (1 + 0.07 * liftEase * (1 - k)) * (1 - (1 - arrival) * k);
-    const scale = travelScale * (1 - 0.75 * sink);
-
+    const k = t.value;
+    if (k <= 0 || k >= 1) return { opacity: 0, transform: [{ translateX: -200 }, { translateY: -200 }, { scale: 0 }] };
+    // Quadratic curve whose control point sits above both ends: a soft arc.
+    const cx = x0.value + (x1.value - x0.value) * 0.2;
+    const cy = Math.min(y0.value, y1.value) - 80;
+    const x = (1 - k) * (1 - k) * x0.value + 2 * (1 - k) * k * cx + k * k * x1.value;
+    const y = (1 - k) * (1 - k) * y0.value + 2 * (1 - k) * k * cy + k * k * y1.value;
+    // Pop out (0 → 1.1), cruise, then shrink into the bag.
+    const appear = Math.min(k / 0.18, 1);
+    const sink = Math.max(0, (k - 0.82) / 0.18);
+    const scale = (0.3 + 0.8 * (1 - Math.pow(1 - appear, 3))) * (1 - 0.65 * sink);
     return {
-      opacity: 1,
-      shadowOpacity: 0.25 * liftEase * (1 - k),
-      transform: [
-        { translateX: x - from.width / 2 },
-        { translateY: y - from.height / 2 - 12 * liftEase * (1 - k) + 10 * sink },
-        { scale },
-        { rotate: `${-8 * k}deg` },
-      ],
+      opacity: 1 - 0.6 * sink,
+      transform: [{ translateX: x - THUMB / 2 }, { translateY: y - THUMB / 2 }, { scale }],
     };
   });
 
@@ -136,32 +113,30 @@ export function FlyToBagProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider value={value}>
       {children}
-      {flight && (
-        <Animated.View
-          pointerEvents="none"
-          style={[
-            {
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              zIndex: 100,
-              width: flight.from.width,
-              height: flight.from.height,
-              borderRadius: 24,
-              backgroundColor: palette.blush[100],
-              overflow: 'hidden',
-              shadowColor: palette.plum[900],
-              shadowRadius: 18,
-              shadowOffset: { width: 0, height: 10 },
-              elevation: 30,
-            },
-            style,
-          ]}
-        >
-          {flight.visual}
-        </Animated.View>
-      )}
-      {/* Drawn after (above) the flying product, so it visibly drops inside. */}
+      <Animated.View
+        pointerEvents="none"
+        collapsable={false}
+        style={[
+          {
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: THUMB,
+            height: THUMB,
+            borderRadius: THUMB / 2,
+            borderWidth: 2,
+            borderColor: palette.white,
+            backgroundColor: palette.blush[100],
+            overflow: 'hidden',
+            zIndex: 105,
+            elevation: 35,
+          },
+          style,
+        ]}
+      >
+        {visual}
+      </Animated.View>
+      {/* Drawn after (above) the flying picture, so it visibly drops inside. */}
       <FloatingBag targetRef={floatingTarget} />
     </Ctx.Provider>
   );

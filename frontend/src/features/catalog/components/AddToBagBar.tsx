@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Check, ShoppingBag } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type ComponentRef, type RefObject } from 'react';
 import { View } from 'react-native';
 import { Appear } from '@/components/motion/Appear';
 import { PressableScale, QuantityStepper, Text } from '@/components/ui';
@@ -11,12 +11,14 @@ interface Props {
   unitPrice: number;
   quantity: number;
   onQuantityChange: (q: number) => void;
-  onAdd: () => void;
+  /** Gets the button, so the product can fly out of it. */
+  onAdd: (origin: RefObject<ComponentRef<typeof View> | null>) => void;
 }
 
 /** Sticky footer: quantity + Add to Bag, which morphs into a confirmation. */
 export function AddToBagBar({ unitPrice, quantity, onQuantityChange, onAdd }: Props) {
   const [added, setAdded] = useState(false);
+  const buttonRef = useRef<ComponentRef<typeof View>>(null);
 
   useEffect(() => {
     if (!added) return;
@@ -25,7 +27,7 @@ export function AddToBagBar({ unitPrice, quantity, onQuantityChange, onAdd }: Pr
   }, [added]);
 
   const press = () => {
-    onAdd();
+    onAdd(buttonRef);
     setAdded(true);
   };
 
@@ -33,10 +35,10 @@ export function AddToBagBar({ unitPrice, quantity, onQuantityChange, onAdd }: Pr
     <View className="flex-row items-center gap-3 rounded-full bg-white p-2" style={shadow.card}>
       <QuantityStepper value={quantity} onChange={onQuantityChange} />
       <View className="flex-1">
-        <PressableScale onPress={press} disabled={added} style={added ? undefined : shadow.button}>
-          <View className="overflow-hidden rounded-full">
+        <PressableScale onPress={press} disabled={added} style={shadow.button}>
+          <View ref={buttonRef} collapsable={false} className="overflow-hidden rounded-full">
             <LinearGradient
-              colors={added ? [palette.plum[700], palette.plum[800]] : gradients.primary}
+              colors={gradients.primary}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{ height: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 999, paddingHorizontal: 16 }}

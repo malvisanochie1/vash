@@ -10,6 +10,8 @@ export interface AppearOptions {
   preset?: AppearPreset;
   /** Travel distance in px for slide presets. */
   distance?: number;
+  /** Show straight away, no animation. */
+  disabled?: boolean;
 }
 
 export { EASE_OUT } from '@/theme';
@@ -19,12 +21,13 @@ export { EASE_OUT } from '@/theme';
  * Deliberately avoids Reanimated layout animations (`entering`), which can
  * leave views stuck invisible when a screen mounts during a native transition.
  */
-export function useAppear({ delay = 0, duration = 700, preset = 'up', distance = 12 }: AppearOptions = {}) {
-  const progress = useSharedValue(0);
+export function useAppear({ delay = 0, duration = 700, preset = 'up', distance = 12, disabled = false }: AppearOptions = {}) {
+  const progress = useSharedValue(disabled ? 1 : 0);
 
   useEffect(() => {
+    if (disabled) return;
     progress.value = withDelay(delay, withTiming(1, { duration, easing: EASE_OUT }));
-  }, [delay, duration, progress]);
+  }, [delay, disabled, duration, progress]);
 
   return useAnimatedStyle(() => {
     const p = progress.value;

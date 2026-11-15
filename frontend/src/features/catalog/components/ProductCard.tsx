@@ -1,8 +1,6 @@
 import { router } from 'expo-router';
 import { Plus } from 'lucide-react-native';
-import { memo, useEffect, useRef, type ComponentRef } from 'react';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { useBagFx } from '@/features/cart/fly/bag-fx.store';
+import { memo, useRef, type ComponentRef } from 'react';
 import { View, type DimensionValue } from 'react-native';
 import { Appear } from '@/components/motion/Appear';
 import { Badge, PressableScale, Price, Rating, Text } from '@/components/ui';
@@ -22,25 +20,18 @@ interface Props {
 
 export const ProductCard = memo(function ProductCard({ product, width, index = 0 }: Props) {
   const addToCart = useAddToCart();
-  const imageRef = useRef<ComponentRef<typeof View>>(null);
-  const inFlight = useBagFx((s) => s.flyingProductId === product.id);
-  const frameOpacity = useSharedValue(1);
-  useEffect(() => {
-    // While the photo is in the air, its frame looks empty — it really left.
-    frameOpacity.value = withTiming(inFlight ? 0.2 : 1, { duration: inFlight ? 220 : 520 });
-  }, [frameOpacity, inFlight]);
-  const frameStyle = useAnimatedStyle(() => ({ opacity: frameOpacity.value }));
+  const addRef = useRef<ComponentRef<typeof View>>(null);
   const variant = product.variants[0]!;
   const off = percentOff(variant.price, variant.compareAtPrice);
 
   return (
-    <Appear delay={Math.min(index, 7) * 60} style={{ width }}>
+    // Only the first screenful eases in; cards met while scrolling are simply there
+    // (animating them as they scroll in made lists feel jumpy).
+    <Appear delay={index * 70} style={{ width }} disabled={index >= 6}>
       <PressableScale scaleTo={0.97} onPress={() => router.push(`/product/${product.id}`)}>
         <View className="rounded-[28px] bg-white p-2" style={shadow.card}>
-          <View ref={imageRef} collapsable={false} className="overflow-hidden rounded-3xl bg-blush-100">
-            <Animated.View style={frameStyle}>
-              <ProductVisual product={product} />
-            </Animated.View>
+          <View className="overflow-hidden rounded-3xl bg-blush-100">
+            <ProductVisual product={product} />
             <View className="absolute left-2 top-2">{off > 0 && <Badge label={`-${off}%`} tone="solid" />}</View>
             <View className="absolute bottom-2 left-2 rounded-full bg-plum-800/80 px-2 py-0.5">
               <Text className="font-body-medium text-[10px] text-white">{variant.label}</Text>
@@ -65,9 +56,9 @@ export const ProductCard = memo(function ProductCard({ product, width, index = 0
               <PressableScale
                 scaleTo={0.8}
                 accessibilityLabel={`Add ${product.name} to bag`}
-                onPress={() => addToCart(product, { imageFrame: imageRef })}
+                onPress={() => addToCart(product, { origin: addRef })}
               >
-                <View className="h-9 w-9 items-center justify-center rounded-full bg-rose-500">
+                <View ref={addRef} collapsable={false} className="h-9 w-9 items-center justify-center rounded-full bg-rose-500">
                   <Plus size={18} color={palette.white} strokeWidth={2.6} />
                 </View>
               </PressableScale>

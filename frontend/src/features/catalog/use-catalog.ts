@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import type { Product } from '@/types/domain';
 import { api, type ProductQuery } from '@/services';
 
 export const catalogKeys = {
@@ -10,8 +11,19 @@ export const catalogKeys = {
 export const useProducts = (query?: ProductQuery) =>
   useQuery({ queryKey: catalogKeys.products(query), queryFn: () => api.catalog.products(query) });
 
-export const useProduct = (id: string) =>
-  useQuery({ queryKey: catalogKeys.product(id), queryFn: () => api.catalog.product(id) });
+export const useProduct = (id: string) => {
+  const client = useQueryClient();
+  return useQuery({
+    queryKey: catalogKeys.product(id),
+    queryFn: () => api.catalog.product(id),
+    // Open instantly with what the list already loaded; no spinner between screens.
+    placeholderData: () =>
+      client
+        .getQueriesData<Product[]>({ queryKey: ['products'] })
+        .flatMap(([, list]) => list ?? [])
+        .find((p) => p.id === id),
+  });
+};
 
 export const useCategories = () =>
   useQuery({ queryKey: catalogKeys.categories, queryFn: () => api.catalog.categories(), staleTime: Infinity });
