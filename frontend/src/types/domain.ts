@@ -1,6 +1,6 @@
 /** Domain contract shared with the backend API (backend/src/modules/*). */
 
-export type ProductCategory = 'treatment' | 'cleanse' | 'moisture' | 'styling' | 'extensions' | 'kits';
+export type ProductCategory = 'treatment' | 'regrowth' | 'cleanse' | 'moisture' | 'styling' | 'kits';
 
 export type ArtShape =
   | 'bottle'
@@ -11,9 +11,7 @@ export type ArtShape =
   | 'dropper'
   | 'spray'
   | 'box'
-  | 'kit'
-  | 'hairpack'
-  | 'braidpack';
+  | 'kit';
 
 /** Illustrated packshot spec, used until real product photography is uploaded. */
 export interface ProductArt {

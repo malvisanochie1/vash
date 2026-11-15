@@ -1,7 +1,7 @@
-export const PRODUCT_CATEGORIES = ['treatment', 'cleanse', 'moisture', 'styling', 'extensions', 'kits'] as const;
+export const PRODUCT_CATEGORIES = ['treatment', 'regrowth', 'cleanse', 'moisture', 'styling', 'kits'] as const;
 export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number];
 
-export const ART_SHAPES = ['bottle', 'pump', 'jar', 'tin', 'tube', 'dropper', 'spray', 'box', 'kit', 'hairpack', 'braidpack'] as const;
+export const ART_SHAPES = ['bottle', 'pump', 'jar', 'tin', 'tube', 'dropper', 'spray', 'box', 'kit'] as const;
 export type ArtShape = (typeof ART_SHAPES)[number];
 
 /** Illustrated packshot spec, used until real product photography is uploaded. */

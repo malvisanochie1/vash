@@ -3,7 +3,7 @@ import { env } from './config/env.js';
 import { logger } from './core/logger.js';
 
 const server = createApp().listen(env.PORT, () => {
-  logger.info('Velora API listening', { port: env.PORT, env: env.NODE_ENV });
+  logger.info('Vash API listening', { port: env.PORT, env: env.NODE_ENV });
 });
 
 const shutdown = (signal: string) => {

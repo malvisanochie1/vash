@@ -1,13 +1,18 @@
 import type { Category, Product } from './product.types.js';
 
 /**
- * Catalogue seed. Prices are placeholders until final pricing is confirmed.
+ * VASH catalogue seed. Prices are placeholders until final pricing is confirmed.
  */
 export const categorySeed: Category[] = [
   {
     "id": "treatment",
     "name": "Treatment",
     "productId": "p-relaxer-kit"
+  },
+  {
+    "id": "regrowth",
+    "name": "Regrowth",
+    "productId": "p-growth-oil"
   },
   {
     "id": "cleanse",
@@ -23,11 +28,6 @@ export const categorySeed: Category[] = [
     "id": "styling",
     "name": "Styling",
     "productId": "p-edge-control"
-  },
-  {
-    "id": "extensions",
-    "name": "Weavon",
-    "productId": "p-silky-weavon"
   },
   {
     "id": "kits",
@@ -55,13 +55,13 @@ export const productSeed: Product[] = [
       "Olive oil",
       "Panthenol"
     ],
-    "howToUse": "Base the scalp and hairline. Mix activator into crème, apply to dry unwashed hair from roots, smooth and rinse within the recommended time. Finish with the neutralizing shampoo.",
+    "howToUse": "Base the scalp and hairline. Mix activator into crème, apply to dry unwashed hair from the roots, smooth and rinse within the recommended time. Finish with the neutralizing shampoo.",
     "images": [],
     "art": {
       "shape": "box",
-      "body": "#E0217A",
-      "cap": "#3A1027",
-      "label": "#FFFFFF",
+      "body": "#3E1F47",
+      "cap": "#C9A24A",
+      "label": "#C9A24A",
       "text": "RELAXER"
     },
     "optionName": "Strength",
@@ -114,14 +114,14 @@ export const productSeed: Product[] = [
       "Shea butter",
       "Vitamin E"
     ],
-    "howToUse": "Patch test 48 hours before. Apply a protective base, then follow the kit steps carefully. Not for use on children under 6.",
+    "howToUse": "Patch test 48 hours before. Apply a protective base, then follow the kit steps carefully. Not for children under 6.",
     "images": [],
     "art": {
       "shape": "box",
-      "body": "#F7B8D2",
-      "cap": "#E0217A",
+      "body": "#A9C6E8",
+      "cap": "#FFFFFF",
       "label": "#FFFFFF",
-      "text": "KIDDIES"
+      "text": "KIDS"
     },
     "optionName": "Kit",
     "badges": [],
@@ -130,10 +130,96 @@ export const productSeed: Product[] = [
     "variants": [
       {
         "id": "v-kids-std",
-        "label": "Standard",
+        "label": "Kit",
         "price": 4800,
         "inStock": true,
         "compareAtPrice": 6000
+      }
+    ],
+    "isNew": false,
+    "featured": false
+  },
+  {
+    "id": "p-texturizer",
+    "slug": "texturizer",
+    "name": "Curl Texturizer",
+    "nickname": "Soft waves, no lye",
+    "category": "treatment",
+    "tagline": "Loosens tight coils into soft, defined waves",
+    "description": "A gentle texturizer that relaxes your natural coil pattern just enough for soft, manageable waves — without going straight.",
+    "benefits": [
+      "Softens coils",
+      "Defines waves",
+      "No-lye formula"
+    ],
+    "ingredients": [
+      "Shea butter",
+      "Coconut oil",
+      "Wheat protein"
+    ],
+    "howToUse": "Apply to dry hair in sections, comb through gently and rinse within 5–10 minutes. Neutralize thoroughly.",
+    "images": [],
+    "art": {
+      "shape": "jar",
+      "body": "#3C3F44",
+      "cap": "#B8734A",
+      "label": "#FFFFFF",
+      "text": "TEXTURIZER"
+    },
+    "optionName": "Size",
+    "badges": [],
+    "rating": 4.6,
+    "reviewCount": 77,
+    "variants": [
+      {
+        "id": "v-tex-250",
+        "label": "250g",
+        "price": 4900,
+        "inStock": true,
+        "compareAtPrice": 6500
+      }
+    ],
+    "isNew": false,
+    "featured": false
+  },
+  {
+    "id": "p-neutralizing",
+    "slug": "neutralizing",
+    "name": "Neutralizing Shampoo",
+    "nickname": "Relaxer's best friend",
+    "category": "treatment",
+    "tagline": "Colour-signal formula restores pH after relaxing",
+    "description": "Stops the relaxer process and restores your hair's natural pH. The lather turns from teal to white once all relaxer is gone.",
+    "benefits": [
+      "Restores pH",
+      "Colour-signal lather",
+      "Conditions while cleansing"
+    ],
+    "ingredients": [
+      "Citric acid",
+      "Panthenol",
+      "Coconut oil"
+    ],
+    "howToUse": "Use straight after rinsing out relaxer. Lather and rinse at least 3 times, until the lather stays white.",
+    "images": [],
+    "art": {
+      "shape": "bottle",
+      "body": "#11606B",
+      "cap": "#FFFFFF",
+      "label": "#FFFFFF",
+      "text": "NEUTRAL"
+    },
+    "optionName": "Size",
+    "badges": [],
+    "rating": 4.7,
+    "reviewCount": 93,
+    "variants": [
+      {
+        "id": "v-neut-400",
+        "label": "400ml",
+        "price": 3900,
+        "inStock": true,
+        "compareAtPrice": 5000
       }
     ],
     "isNew": false,
@@ -161,9 +247,9 @@ export const productSeed: Product[] = [
     "images": [],
     "art": {
       "shape": "jar",
-      "body": "#FFFFFF",
-      "cap": "#E0217A",
-      "label": "#FADDE9",
+      "body": "#EEF0EF",
+      "cap": "#C9A24A",
+      "label": "#FFFFFF",
       "text": "REPAIR"
     },
     "optionName": "Size",
@@ -171,7 +257,7 @@ export const productSeed: Product[] = [
       "New"
     ],
     "rating": 4.9,
-    "reviewCount": 96,
+    "reviewCount": 196,
     "variants": [
       {
         "id": "v-mask-250",
@@ -213,9 +299,9 @@ export const productSeed: Product[] = [
     "images": [],
     "art": {
       "shape": "tube",
-      "body": "#E0217A",
-      "cap": "#FFFFFF",
-      "label": "#FFFFFF",
+      "body": "#C2673F",
+      "cap": "#F3EBDD",
+      "label": "#F3EBDD",
       "text": "STRONG"
     },
     "optionName": "Size",
@@ -235,17 +321,17 @@ export const productSeed: Product[] = [
     "featured": false
   },
   {
-    "id": "p-scalp-treatment",
-    "slug": "scaltreatment",
-    "name": "Anti-Dandruff Scalp Treatment",
+    "id": "p-scalp-serum",
+    "slug": "scalp-serum",
+    "name": "Anti-Dandruff Scalp Serum",
     "nickname": "Calm, clear scalp",
     "category": "treatment",
     "tagline": "Tea tree & peppermint scalp relief",
-    "description": "A soothing scalp serum that lifts flakes, calms itch and keeps your scalp balanced under braids, weaves and wigs.",
+    "description": "A soothing scalp serum that lifts flakes, calms itch and keeps your scalp balanced.",
     "benefits": [
       "Lifts flakes",
       "Soothes itch",
-      "Great under protective styles"
+      "Cooling feel"
     ],
     "ingredients": [
       "Tea tree oil",
@@ -256,8 +342,8 @@ export const productSeed: Product[] = [
     "images": [],
     "art": {
       "shape": "dropper",
-      "body": "#7BC8A4",
-      "cap": "#3A1027",
+      "body": "#9FD3BF",
+      "cap": "#FFFFFF",
       "label": "#FFFFFF",
       "text": "SCALP"
     },
@@ -284,44 +370,265 @@ export const productSeed: Product[] = [
     "nickname": "Weekly glow-up",
     "category": "treatment",
     "tagline": "Warm-oil therapy for dry, dull hair",
-    "description": "Single-use hot oil tubes that melt into the hair shaft for deep softness and mirror shine.",
+    "description": "A golden blend that melts into the hair shaft for deep softness and mirror shine.",
     "benefits": [
       "Deep softness",
       "Mirror shine",
-      "Pre-measured tubes"
+      "Fast absorbing"
     ],
     "ingredients": [
       "Coconut oil",
       "Jojoba oil",
       "Vitamin E"
     ],
-    "howToUse": "Warm a tube in hot water for 1 minute, apply to damp hair, cover for 10 minutes and rinse.",
+    "howToUse": "Warm the bottle in hot water for a minute, apply to damp hair, cover for 10 minutes and rinse.",
     "images": [],
     "art": {
-      "shape": "tube",
-      "body": "#E8B04B",
-      "cap": "#3A1027",
+      "shape": "bottle",
+      "body": "#C8862F",
+      "cap": "#1B1B1D",
       "label": "#FFFFFF",
       "text": "HOT OIL"
     },
-    "optionName": "Pack",
+    "optionName": "Size",
     "badges": [],
     "rating": 4.6,
     "reviewCount": 54,
     "variants": [
       {
-        "id": "v-hotoil-3",
-        "label": "3 tubes",
-        "price": 3500,
+        "id": "v-hotoil-100",
+        "label": "100ml",
+        "price": 3800,
         "inStock": true,
-        "compareAtPrice": 4500
+        "compareAtPrice": 4900
+      }
+    ],
+    "isNew": false,
+    "featured": false
+  },
+  {
+    "id": "p-growth-oil",
+    "slug": "growth-oil",
+    "name": "Rosemary & Chebe Growth Oil",
+    "nickname": "Grow, glow, repeat",
+    "category": "regrowth",
+    "tagline": "Rosemary, chebe & castor scalp oil",
+    "description": "A lightweight scalp oil that stimulates the scalp and helps retain length by reducing breakage.",
+    "benefits": [
+      "Supports growth",
+      "Retains length",
+      "Non-greasy"
+    ],
+    "ingredients": [
+      "Rosemary oil",
+      "Chebe powder",
+      "Jamaican black castor oil"
+    ],
+    "howToUse": "Apply a few drops to the scalp and massage for 2 minutes. Use 3–4 times a week.",
+    "images": [],
+    "art": {
+      "shape": "dropper",
+      "body": "#C8862F",
+      "cap": "#1B1B1D",
+      "label": "#D2B48C",
+      "text": "GROWTH"
+    },
+    "optionName": "Size",
+    "badges": [
+      "Trending"
+    ],
+    "rating": 4.9,
+    "reviewCount": 256,
+    "variants": [
+      {
+        "id": "v-oil-60",
+        "label": "60ml",
+        "price": 5500,
+        "inStock": true,
+        "compareAtPrice": 7500
       },
       {
-        "id": "v-hotoil-6",
-        "label": "6 tubes",
-        "price": 6500,
+        "id": "v-oil-120",
+        "label": "120ml",
+        "price": 9500,
         "inStock": true,
-        "compareAtPrice": 8500
+        "compareAtPrice": 13000
+      }
+    ],
+    "isNew": false,
+    "featured": true
+  },
+  {
+    "id": "p-regrowth-serum",
+    "slug": "regrowth-serum",
+    "name": "Hair Regrowth Serum",
+    "nickname": "Wake up your roots",
+    "category": "regrowth",
+    "tagline": "Caffeine & biotin for thinning areas",
+    "description": "A fast-absorbing serum for thinning edges, crown and temples. Energises the scalp and supports thicker-looking growth.",
+    "benefits": [
+      "Targets thinning areas",
+      "Lightweight serum",
+      "Visible fullness"
+    ],
+    "ingredients": [
+      "Caffeine",
+      "Biotin",
+      "Peptides"
+    ],
+    "howToUse": "Pump onto thinning areas once daily and massage in. Do not rinse.",
+    "images": [],
+    "art": {
+      "shape": "pump",
+      "body": "#1B1B1D",
+      "cap": "#B9BCC2",
+      "label": "#1B1B1D",
+      "text": "REGROWTH"
+    },
+    "optionName": "Size",
+    "badges": [
+      "New"
+    ],
+    "rating": 4.8,
+    "reviewCount": 118,
+    "variants": [
+      {
+        "id": "v-regrow-50",
+        "label": "50ml",
+        "price": 8900,
+        "inStock": true,
+        "compareAtPrice": 12500
+      }
+    ],
+    "isNew": true,
+    "featured": true
+  },
+  {
+    "id": "p-edge-balm",
+    "slug": "edge-balm",
+    "name": "Edge Regrowth Balm",
+    "nickname": "Fill in the edges",
+    "category": "regrowth",
+    "tagline": "Rich balm for thin, stressed edges",
+    "description": "A nourishing balm that cushions fragile edges and supports regrowth after tight styles.",
+    "benefits": [
+      "Nourishes edges",
+      "Supports regrowth",
+      "Non-sticky"
+    ],
+    "ingredients": [
+      "Castor oil",
+      "Peppermint",
+      "Shea butter"
+    ],
+    "howToUse": "Massage a small amount into the hairline nightly.",
+    "images": [],
+    "art": {
+      "shape": "tin",
+      "body": "#9CAF88",
+      "cap": "#9CAF88",
+      "label": "#FFFFFF",
+      "text": "EDGE BALM"
+    },
+    "optionName": "Size",
+    "badges": [],
+    "rating": 4.7,
+    "reviewCount": 91,
+    "variants": [
+      {
+        "id": "v-edgebalm-50",
+        "label": "50g",
+        "price": 3500,
+        "inStock": true,
+        "compareAtPrice": 4800
+      }
+    ],
+    "isNew": false,
+    "featured": false
+  },
+  {
+    "id": "p-darkening-cream",
+    "slug": "darkening-cream",
+    "name": "Hair Darkening Cream",
+    "nickname": "Rich, natural black",
+    "category": "regrowth",
+    "tagline": "Gradually restores deep natural black",
+    "description": "A conditioning cream that gradually darkens faded or greying hair to a rich, natural-looking black with daily use.",
+    "benefits": [
+      "Gradual darkening",
+      "Conditions as it works",
+      "Natural-looking result"
+    ],
+    "ingredients": [
+      "Black seed oil",
+      "Henna extract",
+      "Shea butter"
+    ],
+    "howToUse": "Apply to clean, dry hair daily, comb through evenly. Results build over 1–2 weeks.",
+    "images": [],
+    "art": {
+      "shape": "jar",
+      "body": "#1B1B1D",
+      "cap": "#B9BCC2",
+      "label": "#1B1B1D",
+      "text": "DARKENING"
+    },
+    "optionName": "Size",
+    "badges": [
+      "New"
+    ],
+    "rating": 4.7,
+    "reviewCount": 64,
+    "variants": [
+      {
+        "id": "v-dark-200",
+        "label": "200g",
+        "price": 5900,
+        "inStock": true,
+        "compareAtPrice": 7900
+      }
+    ],
+    "isNew": true,
+    "featured": true
+  },
+  {
+    "id": "p-darkening-shampoo",
+    "slug": "darkening-shampoo",
+    "name": "Darkening Shampoo",
+    "nickname": "Blend the grey",
+    "category": "regrowth",
+    "tagline": "Grey-blending wash for deeper colour",
+    "description": "A gentle shampoo that blends greys and deepens your natural shade a little more with every wash.",
+    "benefits": [
+      "Blends greys",
+      "Deepens colour",
+      "Gentle cleanse"
+    ],
+    "ingredients": [
+      "Black seed oil",
+      "Amla",
+      "Glycerin"
+    ],
+    "howToUse": "Lather into wet hair, leave for 3 minutes, then rinse. Use 2–3 times a week.",
+    "images": [],
+    "art": {
+      "shape": "bottle",
+      "body": "#1B1B1D",
+      "cap": "#1B1B1D",
+      "label": "#B9BCC2",
+      "text": "DARKENING"
+    },
+    "optionName": "Size",
+    "badges": [],
+    "rating": 4.5,
+    "reviewCount": 42,
+    "variants": [
+      {
+        "id": "v-darksham-300",
+        "label": "300ml",
+        "price": 4800,
+        "inStock": true,
+        "compareAtPrice": 6500
       }
     ],
     "isNew": false,
@@ -333,8 +640,8 @@ export const productSeed: Product[] = [
     "name": "Hibiscus Moisture Shampoo",
     "nickname": "Wash me gently",
     "category": "cleanse",
-    "tagline": "Hibiscus, Amla & Rooibos oils",
-    "description": "A sulphate-conscious cleanse that lifts build-up without stripping moisture. Hibiscus supports the scalp while Amla helps prevent breakage.",
+    "tagline": "Hibiscus, amla & rooibos oils",
+    "description": "A sulphate-conscious cleanse that lifts build-up without stripping moisture.",
     "benefits": [
       "Cleanses gently",
       "Adds moisture & shine",
@@ -349,9 +656,9 @@ export const productSeed: Product[] = [
     "images": [],
     "art": {
       "shape": "bottle",
-      "body": "#E0217A",
-      "cap": "#E0217A",
-      "label": "#FFFFFF",
+      "body": "#C8862F",
+      "cap": "#F4EEE2",
+      "label": "#F4EEE2",
       "text": "SHAMPOO"
     },
     "optionName": "Size",
@@ -362,18 +669,11 @@ export const productSeed: Product[] = [
     "reviewCount": 214,
     "variants": [
       {
-        "id": "v-sham-250",
-        "label": "250ml",
+        "id": "v-sham-400",
+        "label": "400ml",
         "price": 4500,
         "inStock": true,
         "compareAtPrice": 6500
-      },
-      {
-        "id": "v-sham-400",
-        "label": "400ml",
-        "price": 6900,
-        "inStock": true,
-        "compareAtPrice": 9500
       }
     ],
     "isNew": false,
@@ -382,11 +682,11 @@ export const productSeed: Product[] = [
   {
     "id": "p-conditioner",
     "slug": "conditioner",
-    "name": "Hibiscus Detangling Conditioner",
+    "name": "Detangling Conditioner",
     "nickname": "Rinse me smooth",
     "category": "cleanse",
     "tagline": "Slip-rich, knot-melting formula",
-    "description": "Melts knots away, hydrates every strand and leaves curls soft and easy to style.",
+    "description": "Melts knots away, hydrates every strand and leaves hair soft and easy to style.",
     "benefits": [
       "Detangles",
       "Hydrates",
@@ -401,9 +701,9 @@ export const productSeed: Product[] = [
     "images": [],
     "art": {
       "shape": "bottle",
-      "body": "#FFF4E8",
-      "cap": "#FFFFFF",
-      "label": "#E0217A",
+      "body": "#F4EEE2",
+      "cap": "#B98C5E",
+      "label": "#FFFFFF",
       "text": "CONDITIONER"
     },
     "optionName": "Size",
@@ -412,61 +712,11 @@ export const productSeed: Product[] = [
     "reviewCount": 187,
     "variants": [
       {
-        "id": "v-cond-250",
-        "label": "250ml",
+        "id": "v-cond-400",
+        "label": "400ml",
         "price": 4500,
         "inStock": true,
         "compareAtPrice": 6500
-      },
-      {
-        "id": "v-cond-400",
-        "label": "400ml",
-        "price": 6900,
-        "inStock": true,
-        "compareAtPrice": 9500
-      }
-    ],
-    "isNew": false,
-    "featured": true
-  },
-  {
-    "id": "p-neutralizing",
-    "slug": "neutralizing",
-    "name": "Neutralizing Shampoo",
-    "nickname": "Relaxer's best friend",
-    "category": "cleanse",
-    "tagline": "Colour-signal formula restores pH after relaxing",
-    "description": "Stops the relaxer process and restores your hair's natural pH. The pink lather turns white when all relaxer is gone.",
-    "benefits": [
-      "Restores pH",
-      "Colour-signal lather",
-      "Conditions while cleansing"
-    ],
-    "ingredients": [
-      "Citric acid",
-      "Panthenol",
-      "Coconut oil"
-    ],
-    "howToUse": "Use straight after rinsing out relaxer. Lather and rinse at least 3 times, until the lather stays white.",
-    "images": [],
-    "art": {
-      "shape": "bottle",
-      "body": "#F7B8D2",
-      "cap": "#3A1027",
-      "label": "#FFFFFF",
-      "text": "NEUTRAL"
-    },
-    "optionName": "Size",
-    "badges": [],
-    "rating": 4.7,
-    "reviewCount": 93,
-    "variants": [
-      {
-        "id": "v-neut-250",
-        "label": "250ml",
-        "price": 3900,
-        "inStock": true,
-        "compareAtPrice": 5000
       }
     ],
     "isNew": false,
@@ -474,12 +724,12 @@ export const productSeed: Product[] = [
   },
   {
     "id": "p-deep-conditioner",
-    "slug": "deeconditioner",
+    "slug": "deep-conditioner",
     "name": "Deep Repair Conditioner",
     "nickname": "Weekly reset",
     "category": "cleanse",
     "tagline": "Avocado & shea intensive conditioner",
-    "description": "Restores softness and strength to dry, dull hair. Your wash-day reset in a jar.",
+    "description": "Restores softness and strength to dry, dull hair. Your wash-day reset in a tub.",
     "benefits": [
       "Restores softness",
       "Strengthens",
@@ -494,8 +744,8 @@ export const productSeed: Product[] = [
     "images": [],
     "art": {
       "shape": "jar",
-      "body": "#E0217A",
-      "cap": "#E0217A",
+      "body": "#F3EBDD",
+      "cap": "#6E8B3D",
       "label": "#FFFFFF",
       "text": "DEEP"
     },
@@ -505,18 +755,11 @@ export const productSeed: Product[] = [
     "reviewCount": 74,
     "variants": [
       {
-        "id": "v-deep-250",
-        "label": "250g",
-        "price": 6500,
-        "inStock": true,
-        "compareAtPrice": 9000
-      },
-      {
         "id": "v-deep-500",
         "label": "500g",
-        "price": 10900,
+        "price": 7900,
         "inStock": true,
-        "compareAtPrice": 15000
+        "compareAtPrice": 11000
       }
     ],
     "isNew": false,
@@ -537,16 +780,16 @@ export const productSeed: Product[] = [
     ],
     "ingredients": [
       "Shea butter",
-      "Hibiscus oil",
-      "Aloe vera"
+      "Aloe vera",
+      "Hibiscus oil"
     ],
     "howToUse": "Smooth a small amount through damp or dry hair. Do not rinse.",
     "images": [],
     "art": {
-      "shape": "jar",
-      "body": "#F7B8D2",
-      "cap": "#E0217A",
-      "label": "#FFFFFF",
+      "shape": "pump",
+      "body": "#FFFFFF",
+      "cap": "#9CAF88",
+      "label": "#9CAF88",
       "text": "LEAVE-IN"
     },
     "optionName": "Size",
@@ -558,17 +801,10 @@ export const productSeed: Product[] = [
     "variants": [
       {
         "id": "v-leave-250",
-        "label": "250g",
+        "label": "250ml",
         "price": 5800,
         "inStock": true,
         "compareAtPrice": 8000
-      },
-      {
-        "id": "v-leave-500",
-        "label": "500g",
-        "price": 9800,
-        "inStock": true,
-        "compareAtPrice": 13500
       }
     ],
     "isNew": false,
@@ -578,10 +814,10 @@ export const productSeed: Product[] = [
     "id": "p-hair-cream",
     "slug": "hair-cream",
     "name": "Shea & Coconut Hair Cream",
-    "nickname": "Everyday nourishment",
+    "nickname": "Everyday hair food",
     "category": "moisture",
-    "tagline": "Classic hair food for daily softness",
-    "description": "A rich, everyday hair cream that nourishes dry hair and scalp, adds sheen and keeps styles neat.",
+    "tagline": "Classic daily softness",
+    "description": "A rich everyday hair cream that nourishes dry hair and scalp, adds sheen and keeps styles neat.",
     "benefits": [
       "Nourishes dry hair",
       "Adds sheen",
@@ -596,8 +832,8 @@ export const productSeed: Product[] = [
     "images": [],
     "art": {
       "shape": "jar",
-      "body": "#FFF4E8",
-      "cap": "#6B3E2E",
+      "body": "#FFFFFF",
+      "cap": "#7A4E2D",
       "label": "#FFFFFF",
       "text": "CREAM"
     },
@@ -607,75 +843,15 @@ export const productSeed: Product[] = [
     "reviewCount": 320,
     "variants": [
       {
-        "id": "v-cream-150",
-        "label": "150g",
-        "price": 2800,
-        "inStock": true,
-        "compareAtPrice": 3800
-      },
-      {
         "id": "v-cream-300",
         "label": "300g",
-        "price": 4800,
+        "price": 3800,
         "inStock": true,
-        "compareAtPrice": 6500
+        "compareAtPrice": 5000
       }
     ],
     "isNew": false,
     "featured": false
-  },
-  {
-    "id": "p-growth-oil",
-    "slug": "growth-oil",
-    "name": "Rosemary & Chebe Growth Oil",
-    "nickname": "Grow, glow, repeat",
-    "category": "moisture",
-    "tagline": "Rosemary, chebe & castor scalp oil",
-    "description": "A lightweight scalp oil that stimulates the scalp and helps retain length by reducing breakage.",
-    "benefits": [
-      "Supports growth",
-      "Retains length",
-      "Non-greasy"
-    ],
-    "ingredients": [
-      "Rosemary oil",
-      "Chebe powder",
-      "Jamaican black castor oil"
-    ],
-    "howToUse": "Apply a few drops to the scalp, massage for 2 minutes. Use 3–4 times a week.",
-    "images": [],
-    "art": {
-      "shape": "dropper",
-      "body": "#E8B04B",
-      "cap": "#6B3E2E",
-      "label": "#FFFFFF",
-      "text": "GROWTH"
-    },
-    "optionName": "Size",
-    "badges": [
-      "New",
-      "Trending"
-    ],
-    "rating": 4.9,
-    "reviewCount": 156,
-    "variants": [
-      {
-        "id": "v-oil-60",
-        "label": "60ml",
-        "price": 5500,
-        "inStock": true,
-        "compareAtPrice": 7500
-      },
-      {
-        "id": "v-oil-120",
-        "label": "120ml",
-        "price": 9500,
-        "inStock": true,
-        "compareAtPrice": 13000
-      }
-    ],
-    "isNew": true,
-    "featured": true
   },
   {
     "id": "p-hair-lotion",
@@ -699,9 +875,9 @@ export const productSeed: Product[] = [
     "images": [],
     "art": {
       "shape": "pump",
-      "body": "#FFFFFF",
-      "cap": "#E0217A",
-      "label": "#F7B8D2",
+      "body": "#A9A2B8",
+      "cap": "#FFFFFF",
+      "label": "#FFFFFF",
       "text": "LOTION"
     },
     "optionName": "Size",
@@ -741,9 +917,9 @@ export const productSeed: Product[] = [
     "howToUse": "Apply a small amount to edges and brush into place.",
     "images": [],
     "art": {
-      "shape": "tin",
-      "body": "#E0217A",
-      "cap": "#3A1027",
+      "shape": "jar",
+      "body": "#DCE3E6",
+      "cap": "#1B1B1D",
       "label": "#FFFFFF",
       "text": "EDGES"
     },
@@ -755,368 +931,15 @@ export const productSeed: Product[] = [
     "reviewCount": 389,
     "variants": [
       {
-        "id": "v-edge-50",
-        "label": "50g",
-        "price": 2500,
-        "inStock": true,
-        "compareAtPrice": 3500
-      },
-      {
         "id": "v-edge-100",
         "label": "100g",
-        "price": 4200,
-        "inStock": true,
-        "compareAtPrice": 5800
-      }
-    ],
-    "isNew": false,
-    "featured": true
-  },
-  {
-    "id": "p-curl-activator",
-    "slug": "curl-activator",
-    "name": "Curl Defining Activator",
-    "nickname": "Bounce on demand",
-    "category": "styling",
-    "tagline": "Defines curls & coils without crunch",
-    "description": "A curl cream-gel that defines, separates and holds curls with soft touchable bounce.",
-    "benefits": [
-      "Defines curls",
-      "Soft hold",
-      "Anti-frizz"
-    ],
-    "ingredients": [
-      "Flaxseed gel",
-      "Aloe vera",
-      "Glycerin"
-    ],
-    "howToUse": "Apply to soaking-wet hair in sections, rake through and air-dry or diffuse.",
-    "images": [],
-    "art": {
-      "shape": "pump",
-      "body": "#E0217A",
-      "cap": "#3A1027",
-      "label": "#FFFFFF",
-      "text": "CURL"
-    },
-    "optionName": "Size",
-    "badges": [],
-    "rating": 4.7,
-    "reviewCount": 110,
-    "variants": [
-      {
-        "id": "v-curl-250",
-        "label": "250ml",
-        "price": 5200,
-        "inStock": true,
-        "compareAtPrice": 7000
-      }
-    ],
-    "isNew": true,
-    "featured": false
-  },
-  {
-    "id": "p-setting-lotion",
-    "slug": "setting-lotion",
-    "name": "Wrap & Set Lotion",
-    "nickname": "Salon-smooth sets",
-    "category": "styling",
-    "tagline": "For roller sets, wraps and silk presses",
-    "description": "Gives roller sets and wraps lasting body and shine while protecting from heat.",
-    "benefits": [
-      "Heat protection",
-      "Long-lasting body",
-      "Brilliant shine"
-    ],
-    "ingredients": [
-      "Silk amino acids",
-      "Panthenol",
-      "Argan oil"
-    ],
-    "howToUse": "Apply to damp hair before setting, wrapping or blow-drying.",
-    "images": [],
-    "art": {
-      "shape": "bottle",
-      "body": "#F7B8D2",
-      "cap": "#E0217A",
-      "label": "#FFFFFF",
-      "text": "SETTING"
-    },
-    "optionName": "Size",
-    "badges": [],
-    "rating": 4.5,
-    "reviewCount": 47,
-    "variants": [
-      {
-        "id": "v-set-250",
-        "label": "250ml",
-        "price": 3800,
-        "inStock": true,
-        "compareAtPrice": 5000
-      }
-    ],
-    "isNew": false,
-    "featured": false
-  },
-  {
-    "id": "p-braid-spray",
-    "slug": "braid-spray",
-    "name": "Braid & Scalp Refresh Spray",
-    "nickname": "Fresh under braids",
-    "category": "styling",
-    "tagline": "Itch relief & shine for protective styles",
-    "description": "A cooling spray that relieves itch, refreshes the scalp and adds shine to braids, twists and weaves.",
-    "benefits": [
-      "Cools & relieves itch",
-      "Adds shine",
-      "Light mist"
-    ],
-    "ingredients": [
-      "Peppermint oil",
-      "Witch hazel",
-      "Aloe vera"
-    ],
-    "howToUse": "Spray directly onto scalp and braids as needed.",
-    "images": [],
-    "art": {
-      "shape": "spray",
-      "body": "#7BC8A4",
-      "cap": "#E0217A",
-      "label": "#FFFFFF",
-      "text": "BRAID"
-    },
-    "optionName": "Size",
-    "badges": [],
-    "rating": 4.7,
-    "reviewCount": 128,
-    "variants": [
-      {
-        "id": "v-spray-250",
-        "label": "250ml",
-        "price": 3900,
-        "inStock": true,
-        "compareAtPrice": 5200
-      }
-    ],
-    "isNew": false,
-    "featured": false
-  },
-  {
-    "id": "p-silky-weavon",
-    "slug": "silky-weavon",
-    "name": "Silky Straight Weavon",
-    "nickname": "Sleek & swingy",
-    "category": "extensions",
-    "tagline": "Soft, tangle-free bundles",
-    "description": "Silky straight bundles with natural movement and a soft, tangle-free finish. Holds curls and blends easily.",
-    "benefits": [
-      "Tangle-free",
-      "Natural movement",
-      "Heat friendly"
-    ],
-    "ingredients": [
-      "Premium fibre blend"
-    ],
-    "howToUse": "Wash gently with diluted shampoo, condition and air-dry. Store in a hairnet.",
-    "images": [],
-    "art": {
-      "shape": "hairpack",
-      "body": "#3A1027",
-      "cap": "#E0217A",
-      "label": "#1C0F14",
-      "text": "STRAIGHT"
-    },
-    "optionName": "Length",
-    "badges": [
-      "Weavon"
-    ],
-    "rating": 4.7,
-    "reviewCount": 203,
-    "variants": [
-      {
-        "id": "v-silky-12",
-        "label": "12\"",
-        "price": 9500,
-        "inStock": true,
-        "compareAtPrice": 13000
-      },
-      {
-        "id": "v-silky-16",
-        "label": "16\"",
-        "price": 12500,
-        "inStock": true,
-        "compareAtPrice": 17000
-      },
-      {
-        "id": "v-silky-20",
-        "label": "20\"",
-        "price": 15500,
-        "inStock": true,
-        "compareAtPrice": 21000
-      }
-    ],
-    "isNew": false,
-    "featured": true
-  },
-  {
-    "id": "p-body-wave",
-    "slug": "body-wave",
-    "name": "Body Wave Weavon",
-    "nickname": "Soft glam waves",
-    "category": "extensions",
-    "tagline": "Bouncy, voluminous waves",
-    "description": "Glamorous body waves with lasting bounce and volume — red-carpet ready from day one.",
-    "benefits": [
-      "Bouncy waves",
-      "Full volume",
-      "Low shedding"
-    ],
-    "ingredients": [
-      "Premium fibre blend"
-    ],
-    "howToUse": "Finger-detangle, wash with diluted shampoo and scrunch while damp.",
-    "images": [],
-    "art": {
-      "shape": "hairpack",
-      "body": "#E0217A",
-      "cap": "#3A1027",
-      "label": "#3B1E14",
-      "text": "BODY WAVE"
-    },
-    "optionName": "Length",
-    "badges": [],
-    "rating": 4.8,
-    "reviewCount": 167,
-    "variants": [
-      {
-        "id": "v-wave-14",
-        "label": "14\"",
-        "price": 11000,
-        "inStock": true,
-        "compareAtPrice": 15000
-      },
-      {
-        "id": "v-wave-18",
-        "label": "18\"",
-        "price": 14500,
-        "inStock": true,
-        "compareAtPrice": 19500
-      }
-    ],
-    "isNew": true,
-    "featured": false
-  },
-  {
-    "id": "p-braid-extension",
-    "slug": "braid-extension",
-    "name": "Super Pre-Stretched Braid",
-    "nickname": "Quick, light braids",
-    "category": "extensions",
-    "tagline": "Pre-stretched, itch-free braiding hair",
-    "description": "Lightweight, pre-stretched braiding hair with tapered ends — faster installs and a natural finish.",
-    "benefits": [
-      "Pre-stretched",
-      "Itch-free",
-      "Lightweight"
-    ],
-    "ingredients": [
-      "Hot-water-set fibre"
-    ],
-    "howToUse": "Separate strands and braid as usual. Dip ends in hot water to seal.",
-    "images": [],
-    "art": {
-      "shape": "braidpack",
-      "body": "#F7B8D2",
-      "cap": "#E0217A",
-      "label": "#1C0F14",
-      "text": "BRAID"
-    },
-    "optionName": "Colour",
-    "badges": [
-      "Bestseller"
-    ],
-    "rating": 4.8,
-    "reviewCount": 541,
-    "variants": [
-      {
-        "id": "v-braid-1b",
-        "label": "1B Black",
-        "price": 2200,
-        "inStock": true,
-        "compareAtPrice": 3000
-      },
-      {
-        "id": "v-braid-30",
-        "label": "30 Auburn",
-        "price": 2200,
-        "inStock": true,
-        "compareAtPrice": 3000
-      },
-      {
-        "id": "v-braid-613",
-        "label": "613 Blonde",
-        "price": 2400,
-        "inStock": true,
-        "compareAtPrice": 3200
-      },
-      {
-        "id": "v-braid-pink",
-        "label": "Pink",
-        "price": 2400,
-        "inStock": true,
-        "compareAtPrice": 3200
-      }
-    ],
-    "isNew": false,
-    "featured": true
-  },
-  {
-    "id": "p-kinky-twist",
-    "slug": "kinky-twist",
-    "name": "Kinky Twist Crochet",
-    "nickname": "Effortless twists",
-    "category": "extensions",
-    "tagline": "Ready-twisted crochet in minutes",
-    "description": "Pre-twisted crochet hair with a natural kinky texture — a protective style in under two hours.",
-    "benefits": [
-      "Pre-twisted",
-      "Natural texture",
-      "Quick install"
-    ],
-    "ingredients": [
-      "Soft kanekalon blend"
-    ],
-    "howToUse": "Install on cornrows with a crochet needle. Trim and dip ends to finish.",
-    "images": [],
-    "art": {
-      "shape": "braidpack",
-      "body": "#3A1027",
-      "cap": "#F7B8D2",
-      "label": "#2A1810",
-      "text": "TWIST"
-    },
-    "optionName": "Colour",
-    "badges": [],
-    "rating": 4.6,
-    "reviewCount": 98,
-    "variants": [
-      {
-        "id": "v-kinky-1b",
-        "label": "1B Black",
-        "price": 3500,
-        "inStock": true,
-        "compareAtPrice": 4500
-      },
-      {
-        "id": "v-kinky-350",
-        "label": "350 Copper",
-        "price": 3500,
+        "price": 3200,
         "inStock": true,
         "compareAtPrice": 4500
       }
     ],
     "isNew": false,
-    "featured": false
+    "featured": true
   },
   {
     "id": "p-test-sachet",
@@ -1125,7 +948,7 @@ export const productSeed: Product[] = [
     "nickname": "Try me first",
     "category": "moisture",
     "tagline": "Single-use trial sachet",
-    "description": "A single-use sachet of our Daily Leave-In Cream — perfect for trying the formula before buying the full jar.",
+    "description": "A single-use sachet of our Daily Leave-In Cream — try the formula before buying the full size.",
     "benefits": [
       "Try before you buy",
       "Single use",
@@ -1133,14 +956,14 @@ export const productSeed: Product[] = [
     ],
     "ingredients": [
       "Shea butter",
-      "Hibiscus oil"
+      "Aloe vera"
     ],
     "howToUse": "Smooth through damp hair after washing. Do not rinse.",
     "images": [],
     "art": {
       "shape": "tube",
-      "body": "#F7B8D2",
-      "cap": "#E0217A",
+      "body": "#9CAF88",
+      "cap": "#FFFFFF",
       "label": "#FFFFFF",
       "text": "SACHET"
     },
@@ -1153,20 +976,20 @@ export const productSeed: Product[] = [
     "variants": [
       {
         "id": "v-test-sachet",
-        "label": "Sachet",
+        "label": "15ml",
         "price": 15,
         "inStock": true
       }
     ],
     "isNew": false,
-    "featured": true
+    "featured": false
   },
   {
     "id": "p-test-sample",
     "slug": "test-sample",
     "name": "Growth Oil Sample",
     "nickname": "A drop of glow",
-    "category": "moisture",
+    "category": "regrowth",
     "tagline": "5ml sample vial",
     "description": "A 5ml sample of our Rosemary & Chebe Growth Oil.",
     "benefits": [
@@ -1182,9 +1005,9 @@ export const productSeed: Product[] = [
     "images": [],
     "art": {
       "shape": "dropper",
-      "body": "#E8B04B",
-      "cap": "#6B3E2E",
-      "label": "#FFFFFF",
+      "body": "#C8862F",
+      "cap": "#1B1B1D",
+      "label": "#D2B48C",
       "text": "SAMPLE"
     },
     "optionName": "Size",
@@ -1202,7 +1025,7 @@ export const productSeed: Product[] = [
       }
     ],
     "isNew": false,
-    "featured": true
+    "featured": false
   },
   {
     "id": "p-wash-day-kit",
@@ -1227,9 +1050,9 @@ export const productSeed: Product[] = [
     "images": [],
     "art": {
       "shape": "kit",
-      "body": "#E0217A",
-      "cap": "#3A1027",
-      "label": "#FFFFFF",
+      "body": "#C8862F",
+      "cap": "#F4EEE2",
+      "label": "#F4EEE2",
       "text": "WASH DAY"
     },
     "optionName": "Set",
@@ -1241,18 +1064,11 @@ export const productSeed: Product[] = [
     "reviewCount": 142,
     "variants": [
       {
-        "id": "v-kit-duo",
-        "label": "Duo",
-        "price": 8500,
-        "inStock": true,
-        "compareAtPrice": 13000
-      },
-      {
         "id": "v-kit-full",
         "label": "Full kit",
-        "price": 19500,
+        "price": 11500,
         "inStock": true,
-        "compareAtPrice": 39000
+        "compareAtPrice": 23000
       }
     ],
     "isNew": false,
@@ -1280,8 +1096,8 @@ export const productSeed: Product[] = [
     "images": [],
     "art": {
       "shape": "kit",
-      "body": "#F7B8D2",
-      "cap": "#E0217A",
+      "body": "#11606B",
+      "cap": "#EEF0EF",
       "label": "#FFFFFF",
       "text": "AFTERCARE"
     },
@@ -1295,9 +1111,9 @@ export const productSeed: Product[] = [
       {
         "id": "v-care-kit",
         "label": "Kit",
-        "price": 14500,
+        "price": 12500,
         "inStock": true,
-        "compareAtPrice": 21000
+        "compareAtPrice": 18500
       }
     ],
     "isNew": false,

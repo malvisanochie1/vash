@@ -12,8 +12,8 @@ export interface UserRepository {
 const demoUser: User = {
   id: 'u-demo',
   name: 'Ada Okafor',
-  email: 'demo@velorahair.ng',
-  passwordHash: bcrypt.hashSync('velora123', 10),
+  email: 'demo@vash.ng',
+  passwordHash: bcrypt.hashSync('vash1234', 10),
   role: 'customer',
   address: { line1: '12 Admiralty Way, Lekki Phase 1', city: 'Lagos', state: 'Lagos', phone: '+234 803 000 4412' },
   createdAt: new Date(0).toISOString(),

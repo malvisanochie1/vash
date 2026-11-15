@@ -10,6 +10,7 @@ import { Chip, Input, Skeleton, Text } from '@/components/ui';
 import { trackScrollForBag } from '@/features/cart/fly/bag-fx.store';
 import { ProductCard } from '@/features/catalog/components/ProductCard';
 import { useCategories, useProducts } from '@/features/catalog/use-catalog';
+import { brand } from '@/config/brand';
 import { useResponsive } from '@/hooks/use-responsive';
 import type { ProductCategory } from '@/types/domain';
 
@@ -31,8 +32,8 @@ export default function Shop() {
   const header = (
     <View className="pb-5">
       <Reveal className="pt-3">
-        <Text variant="title">Shop Velora</Text>
-        <Text variant="caption">Treatments, care, styling & extensions</Text>
+        <Text variant="title">Shop {brand.name}</Text>
+        <Text variant="caption">Relaxers, treatments, regrowth & daily care</Text>
       </Reveal>
       <Reveal index={1} className="mt-4">
         <Input icon={Search} placeholder="Search products" value={term} onChangeText={setTerm} autoFocus={params.focus === '1'} />

@@ -153,42 +153,6 @@ const shapes: Record<ArtShape, (ctx: Ctx) => React.ReactElement> = {
       <G transform="translate(30 58) scale(0.7)">{shapes.jar(ctx)}</G>
     </G>
   ),
-  hairpack: ({ art }) => (
-    <G>
-      <Rect x={54} y={30} width={92} height={152} rx={14} fill={art.body} />
-      <Rect x={62} y={58} width={76} height={108} rx={10} fill={palette.white} opacity={0.9} />
-      {[0, 1, 2, 3, 4, 5].map((i) => (
-        <Path
-          key={i}
-          d={`M${72 + i * 11} 62 C ${60 + i * 11} 92, ${86 + i * 11} 112, ${70 + i * 11} 160`}
-          stroke={art.label}
-          strokeWidth={7}
-          strokeLinecap="round"
-          fill="none"
-          opacity={0.92}
-        />
-      ))}
-      <Rect x={54} y={30} width={92} height={24} rx={12} fill={art.cap} />
-      <Wordmark x={100} y={46} color={palette.white} size={8} />
-      <SvgText x={100} y={178} fill={palette.white} fontSize={8.5} fontFamily={FONT} textAnchor="middle">
-        {art.text ?? ''}
-      </SvgText>
-    </G>
-  ),
-  braidpack: ({ art }) => (
-    <G>
-      <Rect x={68} y={20} width={64} height={166} rx={12} fill={art.body} opacity={0.35} />
-      {[0, 1, 2, 3, 4].map((i) => (
-        <Path key={i} d={`M${78 + i * 11} 26 Q ${80 + i * 11} 110 ${84 + i * 8} 182`} stroke={art.label} strokeWidth={6} strokeLinecap="round" fill="none" />
-      ))}
-      <Rect x={62} y={88} width={76} height={40} rx={8} fill={art.body} />
-      <Rect x={62} y={88} width={76} height={10} rx={5} fill={art.cap} />
-      <Wordmark x={100} y={113} color={palette.white} size={7.5} />
-      <SvgText x={100} y={124} fill={palette.white} fontSize={7} fontFamily={FONT} textAnchor="middle">
-        {art.text ?? ''}
-      </SvgText>
-    </G>
-  ),
 };
 
 interface Props {

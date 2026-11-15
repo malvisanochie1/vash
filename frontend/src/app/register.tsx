@@ -24,7 +24,7 @@ export default function Register() {
   };
 
   return (
-    <AuthLayout title="Join the glow" emoji="✨" subtitle="Create your account to shop treatments, care & extensions.">
+    <AuthLayout title="Join the glow" emoji="✨" subtitle="Create your account to shop treatments, regrowth & daily care.">
       <View className="gap-4">
         <Reveal index={1}>
           <Input icon={User} placeholder="Full name" value={name} onChangeText={setName} error={errors.name} />

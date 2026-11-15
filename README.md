@@ -1,9 +1,9 @@
-# Velora Hair
+# Vash Hair Care
 
-A hair-care shopping app for treatments, relaxers, daily care, styling, weavon and braids. It runs on Android, iOS, tablet and web from one codebase.
+A hair-treatment shopping app: relaxers, treatments, regrowth, darkening, wash and daily care. It runs on Android, iOS, tablet and web from one codebase.
 
 ```
-velora/
+vash/
 ├── frontend/   React Native app (Expo, TypeScript, Tailwind via NativeWind, Reanimated)
 └── backend/    REST API (Node, Express 5, TypeScript, Zod)
 ```
@@ -58,7 +58,7 @@ npm run web        # preview in the browser
 npm run typecheck
 ```
 
-Demo sign-in: `demo@velorahair.ng` / `velora123`. You can also tap "Use the demo account" on the login screen.
+Demo sign-in: `demo@vash.ng` / `vash1234`. You can also tap "Use the demo account" on the login screen.
 
 ## Backend
 

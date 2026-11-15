@@ -37,11 +37,10 @@ export function PromoBanner() {
           <View className="min-h-[178px] flex-row">
             <View className="flex-1 justify-between gap-3 p-5 pr-0">
               <View>
-                <View className="flex-row items-center gap-2">
-                  <View className="rounded-full bg-white px-2.5 py-1">
-                    <Text className="font-body-semibold text-[10px] uppercase tracking-[1.5px] text-rose-600">{campaign.name}</Text>
-                  </View>
-                  <Text className="font-body-medium text-[11px] text-white/90">{campaign.dates}</Text>
+                <View className="self-start rounded-full bg-white px-2.5 py-1">
+                  <Text numberOfLines={1} className="font-body-semibold text-[10px] uppercase tracking-[1.2px] text-rose-600">
+                    {campaign.name} · {campaign.dates}
+                  </Text>
                 </View>
                 <Text className="font-display-bold mt-2.5 text-[28px] leading-8 text-white">{campaign.headline}</Text>
                 <Text className="mt-1 text-xs text-white/90">{campaign.body}</Text>

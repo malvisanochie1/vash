@@ -13,9 +13,9 @@ export const onboardingSlides = [
     body: 'Wash, treat and moisturise with hibiscus, amla and shea.',
   },
   {
-    key: 'extensions',
-    productIds: ['p-braid-extension', 'p-silky-weavon', 'p-edge-control'],
-    title: 'Weavon, braids\n& the finish',
-    body: 'Up to 50% off this Black Friday, delivered to your door.',
+    key: 'regrowth',
+    productIds: ['p-darkening-cream', 'p-regrowth-serum', 'p-edge-balm'],
+    title: 'Regrow, restore\n& darken',
+    body: 'Regrowth serums, edge balms and darkening care — up to 50% off this Black Friday.',
   },
 ] as const;
