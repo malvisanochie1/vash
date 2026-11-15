@@ -1,4 +1,4 @@
-import { Forbidden, NotFound } from '../../core/errors.js';
+import { BadRequest, Forbidden, NotFound } from '../../core/errors.js';
 import { newId, newOrderRef } from '../../shared/ids.js';
 import type { AuthService } from '../auth/auth.service.js';
 import { paymentService } from '../payments/payment.service.js';
@@ -66,8 +66,8 @@ export const createOrderService = ({ orders, products, auth }: Deps) => {
         promoCode: promo?.code,
         delivery: { option: delivery.id, eta: delivery.eta, address: body.delivery.address, recipient: body.delivery.recipient },
         payment: { method: body.paymentMethod, status: provider.initialStatus, instruction },
-        status: 'confirmed',
-        history: [{ status: 'confirmed', at: now }],
+        status: provider.requiresPayment ? 'awaiting_payment' : 'confirmed',
+        history: [{ status: provider.requiresPayment ? 'awaiting_payment' : 'confirmed', at: now }],
         rider: DEFAULT_RIDER,
         createdAt: now,
       });
@@ -76,6 +76,31 @@ export const createOrderService = ({ orders, products, auth }: Deps) => {
     list: (userId: string) => orders.listByUser(userId),
 
     get: ownedOrder,
+
+    /** Customer says the bank transfer is done; the owner now verifies it. */
+    async reportTransfer(userId: string, id: string): Promise<Order> {
+      const order = await ownedOrder(userId, id);
+      if (order.payment.method !== 'bank_transfer') throw BadRequest('This order is not paid by transfer');
+      if (order.status !== 'awaiting_payment') return order;
+      return orders.save({
+        ...order,
+        status: 'payment_review',
+        payment: { ...order.payment, status: 'transfer_reported' },
+        history: [...order.history, { status: 'payment_review', at: new Date().toISOString() }],
+      });
+    },
+
+    /** Owner action: the money arrived — the order is now confirmed. */
+    async confirmPayment(id: string): Promise<Order> {
+      const order = await orders.findById(id);
+      if (!order) throw NotFound('Order');
+      return orders.save({
+        ...order,
+        status: 'confirmed',
+        payment: { ...order.payment, status: 'paid' },
+        history: [...order.history, { status: 'confirmed', at: new Date().toISOString() }],
+      });
+    },
 
     /** Admin/ops action: move an order along its delivery timeline. */
     async updateStatus(id: string, status: OrderStatus): Promise<Order> {

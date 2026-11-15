@@ -17,15 +17,17 @@ export default function Favorites() {
     <Screen>
       <TabScroll>
         <Reveal className="mb-5 pt-3">
-          <Text variant="title">Saved</Text>
-          <Text variant="caption">{saved.length} favourite{saved.length === 1 ? '' : 's'}</Text>
+          <Text variant="title">My Wishlist</Text>
+          <Text variant="caption">
+            {saved.length} saved product{saved.length === 1 ? '' : 's'}
+          </Text>
         </Reveal>
         {saved.length ? (
           <ProductGrid products={saved} />
         ) : (
           <EmptyState
-            title="No favourites yet"
-            body="Tap the heart on any product to keep it here."
+            title="Your wishlist is empty"
+            body="Tap the heart on any product and it will wait for you here."
             action={<Button title="Explore products" onPress={() => router.push('/(tabs)/shop')} />}
           />
         )}

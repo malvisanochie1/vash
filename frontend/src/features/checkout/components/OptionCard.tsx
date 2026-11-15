@@ -1,8 +1,8 @@
 import type { LucideIcon } from 'lucide-react-native';
 import { View } from 'react-native';
-import Animated, { interpolateColor, useAnimatedStyle, useDerivedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { interpolateColor, useAnimatedStyle, useDerivedValue, withTiming } from 'react-native-reanimated';
 import { PressableScale, Text } from '@/components/ui';
-import { palette } from '@/theme';
+import { EASE_OUT, palette } from '@/theme';
 
 interface Props {
   icon: LucideIcon;
@@ -17,7 +17,7 @@ interface Props {
 /** Radio card: border, tint and the radio dot all animate on selection. */
 export function OptionCard({ icon: Icon, title, subtitle, trailing, selected, onPress, disabled }: Props) {
   const p = useDerivedValue(() => withTiming(selected ? 1 : 0, { duration: 220 }));
-  const dot = useDerivedValue(() => withSpring(selected ? 1 : 0, { damping: 12, stiffness: 260 }));
+  const dot = useDerivedValue(() => withTiming(selected ? 1 : 0, { duration: 360, easing: EASE_OUT }));
 
   const card = useAnimatedStyle(() => ({
     borderColor: interpolateColor(p.value, [0, 1], [palette.line, palette.rose[400]]),

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
+import { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
+import { EASE_OUT } from '@/theme';
 
 export type AppearPreset = 'up' | 'down' | 'left' | 'right' | 'scale' | 'fade';
 
@@ -11,14 +12,14 @@ export interface AppearOptions {
   distance?: number;
 }
 
-export const EASE_OUT = Easing.bezier(0.22, 1, 0.36, 1);
+export { EASE_OUT } from '@/theme';
 
 /**
  * Entrance animation driven by a shared value on the UI thread.
  * Deliberately avoids Reanimated layout animations (`entering`), which can
  * leave views stuck invisible when a screen mounts during a native transition.
  */
-export function useAppear({ delay = 0, duration = 420, preset = 'up', distance = 16 }: AppearOptions = {}) {
+export function useAppear({ delay = 0, duration = 560, preset = 'up', distance = 12 }: AppearOptions = {}) {
   const progress = useSharedValue(0);
 
   useEffect(() => {

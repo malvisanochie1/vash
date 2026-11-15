@@ -3,7 +3,7 @@
     "name": "Vash",
     "slug": "velora-hair",
     "scheme": "velora",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -42,7 +42,13 @@
         }
       ],
       "expo-image",
-      "expo-audio"
+      "expo-audio",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow Vash to use Face ID to unlock your account."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": false

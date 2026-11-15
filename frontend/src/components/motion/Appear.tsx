@@ -9,6 +9,8 @@ interface Props extends AppearOptions {
   className?: string;
   /** Outer box style — use for flex/size/position the wrapper itself needs. */
   style?: StyleProp<ViewStyle>;
+  /** Style for the inner content box (e.g. a card shadow that must follow its rounded corners). */
+  contentStyle?: StyleProp<ViewStyle>;
   pointerEvents?: 'auto' | 'none' | 'box-none' | 'box-only';
 }
 
@@ -17,11 +19,17 @@ interface Props extends AppearOptions {
  * Tailwind classes go on an inner plain View. This split keeps styling
  * reliable on Android, iOS and web alike.
  */
-export function Appear({ children, className, style, pointerEvents, ...options }: Props) {
+export function Appear({ children, className, style, contentStyle, pointerEvents, ...options }: Props) {
   const animated = useAppear(options);
   return (
     <Animated.View style={[style, animated]} pointerEvents={pointerEvents}>
-      {className ? <View className={className}>{children}</View> : children}
+      {className || contentStyle ? (
+        <View className={className} style={contentStyle}>
+          {children}
+        </View>
+      ) : (
+        children
+      )}
     </Animated.View>
   );
 }

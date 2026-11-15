@@ -30,7 +30,7 @@ const textColor: Record<Variant, string> = {
 };
 
 /** Lets the press pop play before navigating away. */
-const PRESS_DELAY_MS = 140;
+const PRESS_DELAY_MS = 200;
 
 export function Button({
   title,
@@ -59,7 +59,7 @@ export function Button({
 
   return (
     <PressableScale
-      scaleTo={0.9}
+      scaleTo={0.94}
       onPress={onPress && (() => setTimeout(onPress, PRESS_DELAY_MS))}
       disabled={inactive}
       accessibilityState={{ disabled: inactive, busy: loading }}

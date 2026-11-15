@@ -17,6 +17,17 @@ export const useOrder = (id: string, { live = false } = {}) =>
     refetchInterval: live ? 15_000 : false,
   });
 
+export const useReportTransfer = () => {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.orders.reportTransfer(id),
+    onSuccess: (order) => {
+      client.setQueryData(orderKeys.detail(order.id), order);
+      void client.invalidateQueries({ queryKey: orderKeys.all });
+    },
+  });
+};
+
 export const useCreateOrder = () => {
   const client = useQueryClient();
   return useMutation({

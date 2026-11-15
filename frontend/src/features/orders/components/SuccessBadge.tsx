@@ -8,11 +8,10 @@ import Animated, {
   useSharedValue,
   withDelay,
   withRepeat,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
-import { gradients, palette, shadow } from '@/theme';
+import { EASE_OUT, gradients, palette, shadow } from '@/theme';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const CHECK_LENGTH = 60;
@@ -24,7 +23,7 @@ export function SuccessBadge({ size = 120 }: { size?: number }) {
   const halo = useSharedValue(0);
 
   useEffect(() => {
-    pop.value = withSpring(1, { damping: 10, stiffness: 140 });
+    pop.value = withTiming(1, { duration: 700, easing: EASE_OUT });
     draw.value = withDelay(350, withTiming(1, { duration: 520, easing: Easing.out(Easing.cubic) }));
     halo.value = withDelay(600, withRepeat(withTiming(1, { duration: 1800, easing: Easing.out(Easing.quad) }), -1));
   }, [draw, halo, pop]);

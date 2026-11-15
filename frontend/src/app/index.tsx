@@ -6,8 +6,11 @@ import { SplashIntro } from '@/features/onboarding/SplashIntro';
 export default function Index() {
   const goNext = () => {
     const route = () => {
-      // Signed-in users go straight to the shop; everyone else sees the intro on every launch.
-      router.replace(useAuthStore.getState().token ? '/(tabs)' : '/welcome');
+      // Signed-in users go to the shop (or unlock first if they've been away);
+      // everyone else sees the intro on every launch.
+      const auth = useAuthStore.getState();
+      if (!auth.token) router.replace('/welcome');
+      else router.replace(auth.lockIfIdle() ? '/unlock' : '/(tabs)');
     };
     if (useAuthStore.persist.hasHydrated()) route();
     else useAuthStore.persist.onFinishHydration(route);

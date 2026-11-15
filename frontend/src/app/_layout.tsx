@@ -15,7 +15,9 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ToastHost } from '@/components/ui';
+import { SessionGuard } from '@/features/auth/SessionGuard';
 import { FlyToBagProvider } from '@/features/cart/fly/FlyToBagProvider';
+import { LovePopProvider } from '@/features/favorites/love/LovePopProvider';
 import { palette } from '@/theme';
 
 void SplashScreen.preventAutoHideAsync();
@@ -45,6 +47,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <FlyToBagProvider>
+          <LovePopProvider>
           <Stack
             screenOptions={{
               headerShown: false,
@@ -54,11 +57,14 @@ export default function RootLayout() {
           >
             <Stack.Screen name="index" options={{ animation: 'none' }} />
             <Stack.Screen name="welcome" options={{ animation: 'fade' }} />
+            <Stack.Screen name="unlock" options={{ animation: 'fade', gestureEnabled: false }} />
             <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
             <Stack.Screen name="product/[id]" options={{ animation: 'slide_from_bottom' }} />
             <Stack.Screen name="order/[id]/success" options={{ animation: 'fade', gestureEnabled: false }} />
           </Stack>
+          <SessionGuard />
           <ToastHost />
+          </LovePopProvider>
           </FlyToBagProvider>
         </QueryClientProvider>
       </SafeAreaProvider>

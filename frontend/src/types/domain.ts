@@ -89,7 +89,13 @@ export interface DeliveryOption {
 
 export type PaymentMethod = 'bank_transfer' | 'card' | 'pay_on_delivery';
 
-export type OrderStatus = 'confirmed' | 'packed' | 'out_for_delivery' | 'delivered';
+export type OrderStatus =
+  | 'awaiting_payment'
+  | 'payment_review'
+  | 'confirmed'
+  | 'packed'
+  | 'out_for_delivery'
+  | 'delivered';
 
 export interface OrderLine {
   productId: string;

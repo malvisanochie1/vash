@@ -4,10 +4,8 @@ import { useDeferredValue, useState } from 'react';
 import { FlatList, ScrollView, View } from 'react-native';
 import { EmptyState } from '@/components/layout/EmptyState';
 import { Screen } from '@/components/layout/Screen';
-import { useFloatingBagReset } from '@/components/layout/TabScroll';
 import { Reveal } from '@/components/motion/Reveal';
 import { Chip, Input, Skeleton, Text } from '@/components/ui';
-import { trackScrollForBag } from '@/features/cart/fly/bag-fx.store';
 import { ProductCard } from '@/features/catalog/components/ProductCard';
 import { useCategories, useProducts } from '@/features/catalog/use-catalog';
 import { brand } from '@/config/brand';
@@ -25,14 +23,15 @@ export default function Shop() {
   const { data: categories = [] } = useCategories();
   const { data: products = [], isLoading } = useProducts({ category, q: q || undefined });
   const { gridColumns } = useResponsive();
-  useFloatingBagReset();
 
   const cardWidth = `${(100 - GAP_PERCENT * (gridColumns - 1)) / gridColumns}%` as const;
 
   const header = (
     <View className="pb-5">
       <Reveal className="pt-3">
-        <Text variant="title">Shop {brand.name}</Text>
+        <Text variant="title" style={{ marginRight: 64 }}>
+          Shop {brand.name}
+        </Text>
         <Text variant="caption">Relaxers, treatments, regrowth & daily care</Text>
       </Reveal>
       <Reveal index={1} className="mt-4">
@@ -78,8 +77,6 @@ export default function Shop() {
         contentContainerStyle={{ paddingHorizontal: '5%', paddingBottom: 130, width: '100%', maxWidth: 1180, alignSelf: 'center' }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        scrollEventThrottle={32}
-        onScroll={(e) => trackScrollForBag(e.nativeEvent.contentOffset.y)}
         initialNumToRender={6}
         maxToRenderPerBatch={6}
         windowSize={7}

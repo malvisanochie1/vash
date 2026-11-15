@@ -24,7 +24,7 @@ export default function Bag() {
   if (!lines.length) {
     return (
       <Screen>
-        <TabScroll floatingBag={false}>
+        <TabScroll>
           <Reveal className="pt-3">
             <Text variant="title">My Bag</Text>
           </Reveal>
@@ -54,7 +54,7 @@ export default function Bag() {
 
   return (
     <Screen>
-      <TabScroll floatingBag={false}>
+      <TabScroll>
         <Reveal className="mb-5 pt-3">
           <Text variant="title">My Bag</Text>
           <Text variant="caption">

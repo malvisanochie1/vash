@@ -23,6 +23,12 @@ export const orderRoutes = (service: OrderService, auth: AuthService) => {
     .get('/orders/:id', async (req, res) => {
       res.json({ data: await service.get(requireUserId(req), req.params.id) });
     })
+    .post('/orders/:id/transfer-sent', async (req: Request<{ id: string }>, res) => {
+      res.json({ data: await service.reportTransfer(requireUserId(req), req.params.id) });
+    })
+    .post('/orders/:id/confirm-payment', adminOnly, async (req: Request<{ id: string }>, res) => {
+      res.json({ data: await service.confirmPayment(req.params.id) });
+    })
     .patch('/orders/:id/status', adminOnly, validate(UpdateStatusBody), async (req: Request<{ id: string }>, res) => {
       res.json({ data: await service.updateStatus(req.params.id, req.body.status) });
     });

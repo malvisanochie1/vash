@@ -7,7 +7,6 @@ import { Screen } from '@/components/layout/Screen';
 import { Button, SummaryRow, Text } from '@/components/ui';
 import { paymentLabel } from '@/features/checkout/payment-methods';
 import { HeartBurst } from '@/features/orders/components/HeartBurst';
-import { PaymentInstructions } from '@/features/orders/components/PaymentInstructions';
 import { SuccessBadge } from '@/features/orders/components/SuccessBadge';
 import { useOrder } from '@/features/orders/use-orders';
 import { formatNaira } from '@/lib/format';
@@ -33,7 +32,7 @@ export default function OrderSuccess() {
               Order placed, queen! 👑
             </Text>
             <Text className="mt-2 max-w-[300px] text-center text-muted">
-              Your wash-day goodies are being packed with love. We'll let you know when the rider is close.
+              Thank you for shopping with us. You can follow every step of your order from here.
             </Text>
           </Appear>
 
@@ -48,13 +47,16 @@ export default function OrderSuccess() {
             </Appear>
           )}
 
-          {order && (
-            <Appear delay={rise(2)} className="mt-4 w-full">
-              <PaymentInstructions instruction={order.payment.instruction} />
+          {order?.status === 'payment_review' && (
+            <Appear delay={rise(2)} style={{ width: '100%' }} className="mt-4 flex-row items-center gap-3 rounded-3xl bg-blush-100 p-4">
+              <Text className="text-lg">⏳</Text>
+              <Text className="flex-1 text-[13px]">
+                We're confirming your transfer. Your order moves forward as soon as the money arrives — usually within 30 minutes.
+              </Text>
             </Appear>
           )}
 
-          <Appear delay={rise(3)} className="mt-7 w-full gap-2">
+          <Appear delay={rise(3)} style={{ width: '100%' }} className="mt-7 gap-2">
             <Button title="Track Order" icon={MapPinned} onPress={() => router.replace(`/order/${id}/track`)} />
             <Button title="Continue shopping" variant="ghost" onPress={() => router.replace('/(tabs)')} />
           </Appear>

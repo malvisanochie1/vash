@@ -1,25 +1,22 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Check, ShoppingBag } from 'lucide-react-native';
-import { useEffect, useRef, useState, type ComponentRef } from 'react';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Appear } from '@/components/motion/Appear';
 import { PressableScale, QuantityStepper, Text } from '@/components/ui';
 import { formatNaira } from '@/lib/format';
 import { gradients, palette, shadow } from '@/theme';
-import type { Point } from '@/features/cart/fly/FlyToBagProvider';
 
 interface Props {
   unitPrice: number;
   quantity: number;
   onQuantityChange: (q: number) => void;
-  /** Receives the button's centre so the fly animation can start there. */
-  onAdd: (origin: Point) => void;
+  onAdd: () => void;
 }
 
 /** Sticky footer: quantity + Add to Bag, which morphs into a confirmation. */
 export function AddToBagBar({ unitPrice, quantity, onQuantityChange, onAdd }: Props) {
   const [added, setAdded] = useState(false);
-  const buttonRef = useRef<ComponentRef<typeof View>>(null);
 
   useEffect(() => {
     if (!added) return;
@@ -28,7 +25,7 @@ export function AddToBagBar({ unitPrice, quantity, onQuantityChange, onAdd }: Pr
   }, [added]);
 
   const press = () => {
-    buttonRef.current?.measureInWindow((x, y, w, h) => onAdd({ x: x + w / 2, y: y + h / 2 }));
+    onAdd();
     setAdded(true);
   };
 
@@ -37,7 +34,7 @@ export function AddToBagBar({ unitPrice, quantity, onQuantityChange, onAdd }: Pr
       <QuantityStepper value={quantity} onChange={onQuantityChange} />
       <View className="flex-1">
         <PressableScale onPress={press} disabled={added} style={added ? undefined : shadow.button}>
-          <View ref={buttonRef} collapsable={false} className="overflow-hidden rounded-full">
+          <View className="overflow-hidden rounded-full">
             <LinearGradient
               colors={added ? [palette.plum[700], palette.plum[800]] : gradients.primary}
               start={{ x: 0, y: 0 }}

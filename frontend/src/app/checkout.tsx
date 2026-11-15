@@ -56,7 +56,8 @@ export default function Checkout() {
       {
         onSuccess: (order) => {
           clearCart();
-          router.replace(`/order/${order.id}/success`);
+          // Transfers aren't 'placed' until the customer has actually paid.
+          router.replace(order.status === 'awaiting_payment' ? `/order/${order.id}/pay` : `/order/${order.id}/success`);
         },
         onError: (error) => toast.show({ title: 'Could not place order', message: error.message, tone: 'info' }),
       },

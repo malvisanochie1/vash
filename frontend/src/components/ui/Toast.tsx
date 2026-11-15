@@ -1,10 +1,10 @@
 import { CheckCircle2, Info } from 'lucide-react-native';
 import { useEffect, type ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { create } from 'zustand';
-import { palette, shadow } from '@/theme';
+import { EASE_OUT, palette, shadow } from '@/theme';
 import { Text } from './Text';
 
 interface ToastMessage {
@@ -39,7 +39,7 @@ export function ToastHost() {
   useEffect(() => {
     if (!current) return;
     y.value = -140;
-    y.value = withSpring(0, { damping: 18, stiffness: 190 });
+    y.value = withTiming(0, { duration: 420, easing: EASE_OUT });
     const timer = setTimeout(() => {
       y.value = withTiming(-140, { duration: 220 }, (done) => {
         if (done) runOnJS(hide)();

@@ -17,7 +17,7 @@ interface Props {
 export function Chip({ label, selected, onPress, className }: Props) {
   const fill = useSharedValue(selected ? 1 : 0);
   useEffect(() => {
-    fill.value = withTiming(selected ? 1 : 0, { duration: 220 });
+    fill.value = withTiming(selected ? 1 : 0, { duration: 320 });
   }, [fill, selected]);
   const fillStyle = useAnimatedStyle(() => ({ opacity: fill.value }));
 

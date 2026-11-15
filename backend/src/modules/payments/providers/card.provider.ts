@@ -8,6 +8,7 @@ const PAYSTACK_INIT_URL = 'https://api.paystack.co/transaction/initialize';
 export const cardProvider: PaymentProvider = {
   method: 'card',
   initialStatus: 'awaiting_card',
+  requiresPayment: true,
   async initiate({ reference, amount, email }) {
     if (!env.PAYSTACK_SECRET_KEY) {
       throw new AppError(400, 'Card payments are not available yet. Please choose bank transfer.', 'PAYMENT_UNAVAILABLE');

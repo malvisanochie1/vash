@@ -43,6 +43,8 @@ const TIMELINE: { status: OrderStatus; afterMinutes: number }[] = [
 ];
 
 const withSimulatedProgress = (order: Order): Order => {
+  // Unpaid or unverified transfers wait for the owner — nothing to simulate.
+  if (order.status === 'awaiting_payment' || order.status === 'payment_review') return order;
   const placed = new Date(order.createdAt).getTime();
   const elapsed = (Date.now() - placed) / 60000;
   const history = TIMELINE.filter((t) => elapsed >= t.afterMinutes).map((t) => ({
@@ -150,8 +152,8 @@ export const localApi: Api = {
         promoCode: promo?.promo.code,
         delivery: { option: delivery.id, eta: delivery.eta, address: input.delivery.address, recipient: input.delivery.recipient },
         payment: { method: input.paymentMethod, status: 'pending', instruction },
-        status: 'confirmed',
-        history: [{ status: 'confirmed', at: now }],
+        status: input.paymentMethod === 'pay_on_delivery' ? 'confirmed' : 'awaiting_payment',
+        history: [{ status: input.paymentMethod === 'pay_on_delivery' ? 'confirmed' : 'awaiting_payment', at: now }],
         rider: { name: 'Tunde A.', phone: '+2348030000000', rating: 4.9 },
         createdAt: now,
       };
@@ -161,6 +163,21 @@ export const localApi: Api = {
 
     async list() {
       return (await readOrders()).map(withSimulatedProgress);
+    },
+
+    async reportTransfer(id) {
+      await latency(700);
+      const orders = await readOrders();
+      const order = orders.find((o) => o.id === id);
+      if (!order) throw new ApiError('Order not found', 404);
+      const updated: Order = {
+        ...order,
+        status: 'payment_review',
+        payment: { ...order.payment, status: 'transfer_reported' },
+        history: [...order.history, { status: 'payment_review', at: new Date().toISOString() }],
+      };
+      await writeOrders(orders.map((o) => (o.id === id ? updated : o)));
+      return updated;
     },
 
     async get(id) {

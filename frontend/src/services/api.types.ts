@@ -31,5 +31,7 @@ export interface Api {
     create(input: CreateOrderInput): Promise<Order>;
     list(): Promise<Order[]>;
     get(id: string): Promise<Order>;
+    /** Customer confirms the bank transfer has been sent. */
+    reportTransfer(id: string): Promise<Order>;
   };
 }

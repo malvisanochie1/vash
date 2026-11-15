@@ -1,9 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import type { BottomTabBarProps } from 'expo-router/tabs';
 import { Heart, Home, LayoutGrid, ShoppingBag, User, type LucideIcon } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui';
 import { selectCartCount, useCartStore } from '@/features/cart/cart.store';
@@ -13,12 +13,16 @@ import { gradients, palette, shadow } from '@/theme';
 const TABS: Record<string, { label: string; icon: LucideIcon }> = {
   index: { label: 'Home', icon: Home },
   shop: { label: 'Shop', icon: LayoutGrid },
-  favorites: { label: 'Saved', icon: Heart },
+  favorites: { label: 'Wishlist', icon: Heart },
   bag: { label: 'Bag', icon: ShoppingBag },
   profile: { label: 'Me', icon: User },
 };
 
 const PAD = 6;
+/** Remembered across remounts so the pill always glides from where it was. */
+let lastPillIndex = 0;
+/** Calm in-out curve shared by the tab pill. */
+const GLIDE = Easing.bezier(0.65, 0, 0.35, 1);
 
 /**
  * Floating tab bar. Tabs share the width equally (flex), and a gradient pill
@@ -33,10 +37,27 @@ export function TabBar({ state, navigateToTab }: BottomTabBarProps) {
   const activeIndex = routes.findIndex((r) => r.key === state.routes[state.index]?.key);
 
   const x = useSharedValue(0);
+  const stretch = useSharedValue(0);
+  const placed = useRef(false);
   useEffect(() => {
-    if (segment) x.value = withSpring(activeIndex * segment, { damping: 20, stiffness: 220 });
-  }, [activeIndex, segment, x]);
-  const pill = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
+    if (!segment) return;
+    const target = activeIndex * segment;
+    if (!placed.current) {
+      // First layout (or a remount): start from the last tab we showed, so the pill still glides.
+      x.value = lastPillIndex * segment;
+      placed.current = true;
+    }
+    lastPillIndex = activeIndex;
+    // The pill glides calmly to the new tab, stretching a little mid-way like a soft droplet.
+    const distance = Math.abs(target - x.value) / segment;
+    const duration = 420 + Math.min(distance, 4) * 70;
+    x.value = withTiming(target, { duration, easing: GLIDE });
+    stretch.value = withSequence(
+      withTiming(Math.min(distance, 2) * 0.22, { duration: duration * 0.45, easing: GLIDE }),
+      withTiming(0, { duration: duration * 0.55, easing: GLIDE }),
+    );
+  }, [activeIndex, segment, stretch, x]);
+  const pill = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }, { scaleX: 1 + stretch.value }] }));
 
   return (
     <View pointerEvents="box-none" className="absolute inset-x-0 bottom-0 items-center" style={{ paddingBottom: Math.max(insets.bottom, 12), paddingHorizontal: '5%' }}>

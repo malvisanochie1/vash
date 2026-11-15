@@ -9,7 +9,6 @@ import Animated, {
   useSharedValue,
   withDelay,
   withRepeat,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
@@ -17,7 +16,7 @@ import { Monogram } from '@/components/brand/Monogram';
 import { Text } from '@/components/ui';
 import { brand } from '@/config/brand';
 import { useResponsive } from '@/hooks/use-responsive';
-import { EASE_OUT } from '@/components/motion/use-appear';
+import { EASE_OUT } from '@/theme';
 import { gradients, palette } from '@/theme';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -54,7 +53,7 @@ export function SplashIntro({ onFinish }: { onFinish: () => void }) {
 
   useEffect(() => {
     ring.value = withTiming(1, { duration: 1100, easing: EASE_OUT });
-    logo.value = withDelay(250, withSpring(1, { damping: 14, stiffness: 120 }));
+    logo.value = withDelay(250, withTiming(1, { duration: 900, easing: EASE_OUT }));
     words.value = withDelay(700, withTiming(1, { duration: 600, easing: EASE_OUT }));
     bar.value = withDelay(300, withTiming(1, { duration: DURATION - 400, easing: Easing.inOut(Easing.quad) }));
     exit.value = withDelay(

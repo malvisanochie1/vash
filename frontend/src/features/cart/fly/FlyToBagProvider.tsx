@@ -2,7 +2,7 @@ import { useAudioPlayer } from 'expo-audio';
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ComponentRef, type ReactNode, type RefObject } from 'react';
 import { View } from 'react-native';
 import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { palette, shadow } from '@/theme';
+import { palette } from '@/theme';
 import { useBagFx } from './bag-fx.store';
 
 export interface Point {
@@ -10,43 +10,52 @@ export interface Point {
   y: number;
 }
 
+export interface Rect extends Point {
+  width: number;
+  height: number;
+}
+
 type ViewRef = RefObject<ComponentRef<typeof View> | null>;
 
 interface LaunchOptions {
-  /** Where the item starts (window coordinates, usually the tapped button's centre). */
-  from: Point;
-  /** What flies — typically the product's packshot. */
+  /** The product's image frame on screen (window coordinates). */
+  from: Rect;
+  /** What flies — the product photo, rendered to fill the frame. */
   visual: ReactNode;
   /** Bag to land in; defaults to the floating bag. */
   target?: ViewRef;
-  /** Runs when the item drops into the bag (add to cart here). */
+  /** The product in flight (its card dims while it's away). */
+  productId?: string;
+  /** Runs when the product drops into the bag (add to cart here). */
   onLand?: () => void;
 }
 
 interface FlyContext {
   launch(options: LaunchOptions): void;
-  /** The floating bag registers itself as the default landing spot. */
   floatingTarget: ViewRef;
 }
 
 const Ctx = createContext<FlyContext | null>(null);
 
-const SIZE = 66;
-const FLIGHT_MS = 680;
+const FLIGHT_MS = 1150;
+/** First part of the flight: the product lifts gently out of its frame. */
+const LIFT = 0.2;
+const LANDED_SIZE = 34;
 
-const measureCentre = (ref: ViewRef) =>
-  new Promise<Point | null>((resolve) => {
+const measure = (ref: ViewRef) =>
+  new Promise<Rect | null>((resolve) => {
     if (!ref.current) return resolve(null);
-    ref.current.measureInWindow((x, y, w, h) => resolve(w || h ? { x: x + w / 2, y: y + h / 2 } : null));
+    ref.current.measureInWindow((x, y, width, height) => resolve(width || height ? { x, y, width, height } : null));
   });
 
 /**
- * "Throw it in the bag": a packshot arcs from the tapped button into the bag,
- * spins and shrinks as it drops, then the bag bounces and a soft pop plays.
+ * "Watch it go into the bag": the product photo lifts out of its card, then
+ * glides along a soft arc into the bag, shrinking as it travels. The bag
+ * swells as it lands and a soft pop plays.
  */
 export function FlyToBagProvider({ children }: { children: ReactNode }) {
   const floatingTarget = useRef<ComponentRef<typeof View>>(null);
-  const [flight, setFlight] = useState<{ from: Point; to: Point; visual: ReactNode } | null>(null);
+  const [flight, setFlight] = useState<{ from: Rect; to: Point; visual: ReactNode } | null>(null);
   const pending = useRef<(() => void) | undefined>(undefined);
   const t = useSharedValue(0);
   const drop = useAudioPlayer(require('@assets/sounds/drop.wav'));
@@ -65,18 +74,16 @@ export function FlyToBagProvider({ children }: { children: ReactNode }) {
   }, [drop]);
 
   const launch = useCallback(
-    async ({ from, visual, target, onLand }: LaunchOptions) => {
-      // Finish any flight still in the air so nothing is lost on rapid taps.
+    async ({ from, visual, target, productId, onLand }: LaunchOptions) => {
       if (pending.current) land();
-      if (!target) useBagFx.getState().reveal();
-      // Give the floating bag a frame to appear before measuring it.
-      await new Promise((r) => requestAnimationFrame(() => r(null)));
-      const to = (await measureCentre(target ?? floatingTarget)) ?? { x: from.x, y: from.y - 200 };
+      const bag = await measure(target ?? floatingTarget);
+      const to = bag ? { x: bag.x + bag.width / 2, y: bag.y + bag.height / 2 } : { x: from.x + from.width, y: 40 };
 
       pending.current = onLand;
+      useBagFx.getState().setFlying(productId ?? null);
       setFlight({ from, to, visual });
       t.value = 0;
-      t.value = withTiming(1, { duration: FLIGHT_MS, easing: Easing.bezier(0.5, 0, 0.3, 1) }, (done) => {
+      t.value = withTiming(1, { duration: FLIGHT_MS, easing: Easing.linear }, (done) => {
         if (done) runOnJS(land)();
       });
     },
@@ -85,19 +92,33 @@ export function FlyToBagProvider({ children }: { children: ReactNode }) {
 
   const style = useAnimatedStyle(() => {
     if (!flight) return { opacity: 0 };
-    const p = t.value;
     const { from, to } = flight;
-    // Throw: rise first, then fall into the bag along a parabola.
-    const lift = Math.min(160, Math.abs(to.x - from.x) * 0.4 + 90);
-    const x = from.x + (to.x - from.x) * p;
-    const y = from.y + (to.y - from.y) * p - Math.sin(Math.PI * p) * lift;
+    const p = t.value;
+    const lift = Math.min(p / LIFT, 1);
+    const raw = Math.max(0, (p - LIFT) / (1 - LIFT));
+    // Ease-in-out cubic: starts unhurried, glides, settles softly.
+    const k = raw < 0.5 ? 4 * raw * raw * raw : 1 - Math.pow(-2 * raw + 2, 3) / 2;
+    const liftEase = 1 - Math.pow(1 - lift, 3);
+
+    const x0 = from.x + from.width / 2;
+    const y0 = from.y + from.height / 2;
+    // Control point above both ends gives a graceful arc.
+    const cx = x0 + (to.x - x0) * 0.25;
+    const cy = Math.min(y0, to.y) - 120;
+    const x = (1 - k) * (1 - k) * x0 + 2 * (1 - k) * k * cx + k * k * to.x;
+    const y = (1 - k) * (1 - k) * y0 + 2 * (1 - k) * k * cy + k * k * to.y;
+
+    const endScale = LANDED_SIZE / from.width;
+    const scale = (1 + 0.07 * liftEase * (1 - k)) * (1 - (1 - endScale) * k);
+
     return {
-      opacity: p < 0.9 ? 1 : (1 - p) * 10,
+      opacity: k > 0.88 ? (1 - k) / 0.12 : 1,
+      shadowOpacity: 0.25 * liftEase * (1 - k),
       transform: [
-        { translateX: x - SIZE / 2 },
-        { translateY: y - SIZE / 2 },
-        { scale: 1 - p * 0.68 },
-        { rotate: `${p * 340}deg` },
+        { translateX: x - from.width / 2 },
+        { translateY: y - from.height / 2 - 12 * liftEase * (1 - k) },
+        { scale },
+        { rotate: `${-8 * k}deg` },
       ],
     };
   });
@@ -116,17 +137,16 @@ export function FlyToBagProvider({ children }: { children: ReactNode }) {
               left: 0,
               top: 0,
               zIndex: 100,
-              width: SIZE,
-              height: SIZE,
-              borderRadius: SIZE / 2,
-              borderWidth: 3,
-              borderColor: palette.white,
+              width: flight.from.width,
+              height: flight.from.height,
+              borderRadius: 24,
               backgroundColor: palette.blush[100],
-              alignItems: 'center',
-              justifyContent: 'center',
               overflow: 'hidden',
+              shadowColor: palette.plum[900],
+              shadowRadius: 18,
+              shadowOffset: { width: 0, height: 10 },
+              elevation: 12,
             },
-            shadow.card,
             style,
           ]}
         >

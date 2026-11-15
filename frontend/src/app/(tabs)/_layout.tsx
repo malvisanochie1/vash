@@ -21,7 +21,7 @@ const slideBetweenTabs: NonNullable<BottomTabNavigationOptions['sceneStyleInterp
 
 const slideSpec = {
   animation: 'timing' as const,
-  config: { duration: 380, easing: Easing.bezier(0.22, 1, 0.36, 1) },
+  config: { duration: 460, easing: Easing.bezier(0.65, 0, 0.35, 1) },
 } satisfies BottomTabNavigationOptions['transitionSpec'];
 
 export default function TabsLayout() {

@@ -1,7 +1,7 @@
 export const PAYMENT_METHODS = ['bank_transfer', 'card', 'pay_on_delivery'] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
-export type PaymentStatus = 'awaiting_transfer' | 'awaiting_card' | 'pay_on_delivery' | 'paid';
+export type PaymentStatus = 'awaiting_transfer' | 'transfer_reported' | 'awaiting_card' | 'pay_on_delivery' | 'paid';
 
 export interface BankTransferInstruction {
   type: 'bank_transfer';
@@ -36,5 +36,7 @@ export interface PaymentRequest {
 export interface PaymentProvider {
   readonly method: PaymentMethod;
   readonly initialStatus: PaymentStatus;
+  /** True when the order must wait for the customer to pay before it counts as placed. */
+  readonly requiresPayment: boolean;
   initiate(request: PaymentRequest): Promise<PaymentInstruction>;
 }

@@ -1,82 +1,47 @@
 import { Heart } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withSequence,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+import { useRef, type ComponentRef } from 'react';
+import { Pressable, View } from 'react-native';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { palette } from '@/theme';
 import { useFavoritesStore, useIsFavorite } from '../favorites.store';
+import { useLovePop } from '../love/LovePopProvider';
 
-const LOVES = ['💕', '💗', '💖', '♥', '💞', '💗'];
+const EASE = Easing.bezier(0.33, 0, 0.2, 1);
 
-/** One little heart floating up and away. */
-function Love({ index }: { index: number }) {
-  const t = useSharedValue(0);
-  const angle = -Math.PI / 2 + (index - (LOVES.length - 1) / 2) * 0.42;
-  const distance = 34 + (index % 3) * 10;
-
-  // Each burst remounts these (new key), so this runs once per burst.
-  useEffect(() => {
-    t.value = withDelay(index * 35, withTiming(1, { duration: 820, easing: Easing.out(Easing.cubic) }));
-  }, [index, t]);
-
-  const style = useAnimatedStyle(() => ({
-    opacity: t.value < 0.7 ? 1 : (1 - t.value) / 0.3,
-    transform: [
-      { translateX: Math.cos(angle) * distance * t.value },
-      { translateY: Math.sin(angle) * distance * t.value - 8 * t.value },
-      { scale: 0.4 + t.value * 0.8 },
-      { rotate: `${(index % 2 ? 1 : -1) * 18 * t.value}deg` },
-    ],
-  }));
-
-  return (
-    <Animated.View pointerEvents="none" style={[{ position: 'absolute' }, style]}>
-      <Text style={{ fontSize: 13, color: palette.rose[500] }}>{LOVES[index]}</Text>
-    </Animated.View>
-  );
-}
-
-/** Heart that pops and releases a little cloud of love when you save a product. */
+/** Heart that, when you love a product, pops a big heart up on screen. */
 export function HeartButton({ productId, size = 34 }: { productId: string; size?: number }) {
   const active = useIsFavorite(productId);
   const toggle = useFavoritesStore((s) => s.toggle);
-  const [burst, setBurst] = useState(0);
+  const pop = useLovePop();
+  const ref = useRef<ComponentRef<typeof View>>(null);
   const scale = useSharedValue(1);
   const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
   const press = () => {
-    scale.value = withSequence(withTiming(0.7, { duration: 90 }), withSpring(1, { damping: 5, stiffness: 320 }));
-    if (!active) setBurst((b) => b + 1);
+    scale.value = withSequence(withTiming(0.75, { duration: 120, easing: EASE }), withTiming(1, { duration: 380, easing: EASE }));
+    if (!active) ref.current?.measureInWindow((x, y, w, h) => pop({ x: x + w / 2, y: y + h / 2 }));
     toggle(productId);
   };
 
   return (
-    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-      {burst > 0 && LOVES.map((_, i) => <Love key={`${burst}-${i}`} index={i} />)}
-      <Pressable
-        onPress={press}
-        hitSlop={6}
-        accessibilityRole="button"
-        accessibilityLabel={active ? 'Remove from favourites' : 'Save to favourites'}
-        className="items-center justify-center rounded-full bg-white/90"
-        style={{ width: size, height: size }}
-      >
-        <Animated.View style={style}>
-          <Heart
-            size={size * 0.47}
-            color={active ? palette.rose[500] : palette.ink}
-            fill={active ? palette.rose[500] : 'transparent'}
-            strokeWidth={2}
-          />
-        </Animated.View>
-      </Pressable>
-    </View>
+    <Pressable
+      ref={ref}
+      collapsable={false}
+      onPress={press}
+      hitSlop={6}
+      accessibilityRole="button"
+      accessibilityLabel={active ? 'Remove from wishlist' : 'Add to wishlist'}
+      className="items-center justify-center rounded-full bg-white/90"
+      style={{ width: size, height: size }}
+    >
+      <Animated.View style={style}>
+        <Heart
+          size={size * 0.47}
+          color={active ? palette.rose[500] : palette.ink}
+          fill={active ? palette.rose[500] : 'transparent'}
+          strokeWidth={2}
+        />
+      </Animated.View>
+    </Pressable>
   );
 }

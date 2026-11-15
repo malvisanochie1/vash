@@ -1,9 +1,9 @@
 import type { LucideIcon } from 'lucide-react-native';
 import { useEffect, useRef, type ComponentRef, type Ref } from 'react';
 import { View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { cn } from '@/lib/cn';
-import { motion, palette, shadow } from '@/theme';
+import { EASE_OUT, palette, shadow } from '@/theme';
 import { PressableScale } from './PressableScale';
 import { Text } from './Text';
 
@@ -37,7 +37,7 @@ export function IconButton({
   const previous = useRef(badge);
   useEffect(() => {
     if (badge && badge !== previous.current) {
-      bump.value = withSequence(withTiming(1.3, { duration: 140 }), withSpring(1, motion.spring));
+      bump.value = withSequence(withTiming(1.2, { duration: 200, easing: EASE_OUT }), withTiming(1, { duration: 420, easing: EASE_OUT }));
     }
     previous.current = badge;
   }, [badge, bump]);

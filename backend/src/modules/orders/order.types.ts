@@ -9,7 +9,12 @@ export const DELIVERY_OPTIONS = {
 } as const;
 export type DeliveryOptionId = keyof typeof DELIVERY_OPTIONS;
 
-export const ORDER_STATUSES = ['confirmed', 'packed', 'out_for_delivery', 'delivered'] as const;
+/**
+ * awaiting_payment → the customer has not paid yet (order not yet placed)
+ * payment_review   → customer says the transfer is sent; owner verifies it
+ * confirmed …      → paid (or pay on delivery) and moving to the customer
+ */
+export const ORDER_STATUSES = ['awaiting_payment', 'payment_review', 'confirmed', 'packed', 'out_for_delivery', 'delivered'] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
 export interface OrderLine {

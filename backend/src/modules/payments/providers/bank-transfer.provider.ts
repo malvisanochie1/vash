@@ -5,6 +5,7 @@ import type { PaymentProvider } from '../payment.types.js';
 export const bankTransferProvider: PaymentProvider = {
   method: 'bank_transfer',
   initialStatus: 'awaiting_transfer',
+  requiresPayment: true,
   async initiate({ reference, amount }) {
     if (!env.PAYOUT_ACCOUNT_NUMBER) {
       throw new AppError(503, 'Bank transfer is not configured yet', 'PAYMENT_UNAVAILABLE');

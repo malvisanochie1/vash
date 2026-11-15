@@ -15,7 +15,6 @@ import { EmptyState } from '@/components/layout/EmptyState';
 import { Screen } from '@/components/layout/Screen';
 import { Button, IconButton, Text } from '@/components/ui';
 import { selectCartCount, useCartStore } from '@/features/cart/cart.store';
-import type { Point } from '@/features/cart/fly/FlyToBagProvider';
 import { useAddToCart } from '@/features/cart/use-add-to-cart';
 import { useAfterTransition } from '@/hooks/use-after-transition';
 import { AddToBagBar } from '@/features/catalog/components/AddToBagBar';
@@ -41,6 +40,7 @@ export default function ProductScreen() {
   const addToCart = useAddToCart();
   const ready = useAfterTransition();
   const bagRef = useRef<ComponentRef<typeof View>>(null);
+  const galleryRef = useRef<ComponentRef<typeof View>>(null);
   const scrollY = useSharedValue(0);
 
   const onScroll = useAnimatedScrollHandler((e) => {
@@ -74,7 +74,7 @@ export default function ProductScreen() {
     ...all.filter((p) => p.id !== product.id && p.category !== product.category && p.featured),
   ].slice(0, 6);
 
-  const addToBag = (origin: Point) => addToCart(product, { variant, quantity, origin, target: bagRef });
+  const addToBag = () => addToCart(product, { variant, quantity, imageFrame: galleryRef, target: bagRef });
 
   const topBar = (
     <View className="absolute inset-x-0 top-0 z-10" style={{ paddingTop: insets.top }}>
@@ -119,7 +119,7 @@ export default function ProductScreen() {
         {topBar}
         <Animated.ScrollView onScroll={onScroll} scrollEventThrottle={16} contentContainerStyle={{ paddingTop: insets.top + 72, paddingBottom: 140 }}>
           <Container className="flex-row gap-10">
-            <View className="overflow-hidden rounded-[40px]" style={{ width: galleryWidth, height: galleryHeight }}>
+            <View ref={galleryRef} collapsable={false} className="overflow-hidden rounded-[40px]" style={{ width: galleryWidth, height: galleryHeight }}>
               <ProductGallery product={product} width={galleryWidth} height={galleryHeight} />
             </View>
             <View className="flex-1 pt-2">{info}</View>
@@ -137,7 +137,9 @@ export default function ProductScreen() {
     <Screen edges={[]}>
       {topBar}
       <Animated.ScrollView onScroll={onScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 130 }}>
-        <ProductGallery product={product} width={width} height={galleryHeight + insets.top} scrollY={scrollY} />
+        <View ref={galleryRef} collapsable={false}>
+          <ProductGallery product={product} width={width} height={galleryHeight + insets.top} scrollY={scrollY} />
+        </View>
         <View className="-mt-8 rounded-t-[36px] bg-blush-50 pt-7">
           <Container>
             {info}

@@ -21,5 +21,6 @@ export const remoteApi: Api = {
     create: (input) => http<Order>('/orders', { method: 'POST', body: input }),
     list: () => http<Order[]>('/orders'),
     get: (id) => http<Order>(`/orders/${id}`),
+    reportTransfer: (id) => http<Order>(`/orders/${id}/transfer-sent`, { method: 'POST' }),
   },
 };
