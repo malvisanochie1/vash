@@ -8,7 +8,9 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "runtimeVersion": { "policy": "appVersion" },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.velorahair.app"
@@ -43,6 +45,20 @@
     ],
     "experiments": {
       "typedRoutes": false
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "9b28d41b-83e5-4c9c-a02a-08c26f3a4b9a"
+      }
+    },
+    "owner": "malvis",
+    "updates": {
+      "url": "https://u.expo.dev/9b28d41b-83e5-4c9c-a02a-08c26f3a4b9a"
     }
   }
 }
