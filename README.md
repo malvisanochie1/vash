@@ -24,6 +24,11 @@ You never need to connect your phone to a computer.
    - Close and reopen the app to get it. No reinstall is needed.
    - You only need a new APK when native code changes, for example a new native library, the app icon or the app name.
 
+## View it on a laptop
+
+- **Website (auto-updating):** import this repo on [vercel.com](https://vercel.com/new). Set **Root Directory** to `frontend` and keep the other defaults; `frontend/vercel.json` holds the build settings. Every push to `main` redeploys.
+- **Locally:** `cd frontend && npm install && npm run web`. The app opens at http://localhost:8081.
+
 ## Frontend
 
 ```
