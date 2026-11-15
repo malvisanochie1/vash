@@ -1,0 +1,39 @@
+# Builds an installable Android APK in Expo's cloud and prints the download link.
+# Run it from the Actions tab whenever native code changes (new native library,
+# icon, app name). Everyday changes ship through the OTA workflow instead.
+name: Build Android APK
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: npm ci
+      - name: Build APK
+        run: eas build --platform android --profile preview --non-interactive --wait --json > build.json
+        env:
+          EXPO_PUBLIC_API_URL: ${{ vars.EXPO_PUBLIC_API_URL }}
+      - name: Publish download link
+        run: |
+          URL=$(node -p "require('./build.json')[0].artifacts.buildUrl")
+          PAGE=$(node -p "'https://expo.dev/accounts/' + require('./build.json')[0].project.ownerAccount.name + '/projects/' + require('./build.json')[0].project.slug + '/builds/' + require('./build.json')[0].id")
+          echo "## 📱 Velora APK ready" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Download (open on your phone):** $URL" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Build page with QR code: $PAGE" >> $GITHUB_STEP_SUMMARY
+          echo "APK: $URL"
