@@ -57,7 +57,10 @@ export const productSeed: Product[] = [
       "Panthenol"
     ],
     "howToUse": "Base the scalp and hairline. Mix activator into crème, apply to dry unwashed hair from the roots, smooth and rinse within the recommended time. Finish with the neutralizing shampoo.",
-    "images": [],
+    "images": [
+      "local:relaxer-kit",
+      "local:relaxer-kit-2"
+    ],
     "art": {
       "shape": "box",
       "body": "#3E1F47",
@@ -116,7 +119,9 @@ export const productSeed: Product[] = [
       "Vitamin E"
     ],
     "howToUse": "Patch test 48 hours before. Apply a protective base, then follow the kit steps carefully. Not for children under 6.",
-    "images": [],
+    "images": [
+      "local:kiddies-relaxer"
+    ],
     "art": {
       "shape": "box",
       "body": "#A9C6E8",
@@ -159,7 +164,9 @@ export const productSeed: Product[] = [
       "Wheat protein"
     ],
     "howToUse": "Apply to dry hair in sections, comb through gently and rinse within 5–10 minutes. Neutralize thoroughly.",
-    "images": [],
+    "images": [
+      "local:texturizer"
+    ],
     "art": {
       "shape": "jar",
       "body": "#3C3F44",
@@ -202,7 +209,9 @@ export const productSeed: Product[] = [
       "Coconut oil"
     ],
     "howToUse": "Use straight after rinsing out relaxer. Lather and rinse at least 3 times, until the lather stays white.",
-    "images": [],
+    "images": [
+      "local:neutralizing"
+    ],
     "art": {
       "shape": "bottle",
       "body": "#11606B",
@@ -245,7 +254,10 @@ export const productSeed: Product[] = [
       "Avocado oil"
     ],
     "howToUse": "After shampooing, apply generously to damp hair. Cover with a cap for 15–20 minutes, then rinse thoroughly.",
-    "images": [],
+    "images": [
+      "local:protein-mask",
+      "local:protein-mask-2"
+    ],
     "art": {
       "shape": "jar",
       "body": "#EEF0EF",
@@ -340,7 +352,10 @@ export const productSeed: Product[] = [
       "Salicylic acid"
     ],
     "howToUse": "Part hair and apply directly to the scalp 2–3 times a week. Massage gently.",
-    "images": [],
+    "images": [
+      "local:scalp-serum",
+      "local:scalp-serum-2"
+    ],
     "art": {
       "shape": "dropper",
       "body": "#9FD3BF",
@@ -383,7 +398,9 @@ export const productSeed: Product[] = [
       "Vitamin E"
     ],
     "howToUse": "Warm the bottle in hot water for a minute, apply to damp hair, cover for 10 minutes and rinse.",
-    "images": [],
+    "images": [
+      "local:hot-oil"
+    ],
     "art": {
       "shape": "bottle",
       "body": "#C8862F",
@@ -426,7 +443,9 @@ export const productSeed: Product[] = [
       "Jamaican black castor oil"
     ],
     "howToUse": "Apply a few drops to the scalp and massage for 2 minutes. Use 3–4 times a week.",
-    "images": [],
+    "images": [
+      "local:growth-oil"
+    ],
     "art": {
       "shape": "dropper",
       "body": "#C8862F",
@@ -478,7 +497,10 @@ export const productSeed: Product[] = [
       "Peptides"
     ],
     "howToUse": "Pump onto thinning areas once daily and massage in. Do not rinse.",
-    "images": [],
+    "images": [
+      "local:regrowth-serum",
+      "local:regrowth-serum-2"
+    ],
     "art": {
       "shape": "pump",
       "body": "#1B1B1D",
@@ -523,7 +545,9 @@ export const productSeed: Product[] = [
       "Shea butter"
     ],
     "howToUse": "Massage a small amount into the hairline nightly.",
-    "images": [],
+    "images": [
+      "local:edge-balm"
+    ],
     "art": {
       "shape": "tin",
       "body": "#9CAF88",
@@ -566,7 +590,9 @@ export const productSeed: Product[] = [
       "Shea butter"
     ],
     "howToUse": "Apply to clean, dry hair daily, comb through evenly. Results build over 1–2 weeks.",
-    "images": [],
+    "images": [
+      "local:darkening-cream"
+    ],
     "art": {
       "shape": "jar",
       "body": "#1B1B1D",
@@ -611,7 +637,9 @@ export const productSeed: Product[] = [
       "Glycerin"
     ],
     "howToUse": "Lather into wet hair, leave for 3 minutes, then rinse. Use 2–3 times a week.",
-    "images": [],
+    "images": [
+      "local:darkening-shampoo"
+    ],
     "art": {
       "shape": "bottle",
       "body": "#1B1B1D",
@@ -654,7 +682,9 @@ export const productSeed: Product[] = [
       "Rooibos oil"
     ],
     "howToUse": "Apply to wet hair, lather from roots to ends, rinse and repeat.",
-    "images": [],
+    "images": [
+      "local:shampoo"
+    ],
     "art": {
       "shape": "bottle",
       "body": "#C8862F",
@@ -699,7 +729,9 @@ export const productSeed: Product[] = [
       "Shea butter"
     ],
     "howToUse": "After shampooing, apply to damp hair, leave for 3–5 minutes and rinse.",
-    "images": [],
+    "images": [
+      "local:conditioner"
+    ],
     "art": {
       "shape": "bottle",
       "body": "#F4EEE2",
@@ -742,7 +774,10 @@ export const productSeed: Product[] = [
       "Hibiscus extract"
     ],
     "howToUse": "After shampooing, apply to damp hair, cover with a cap for 15 minutes and rinse.",
-    "images": [],
+    "images": [
+      "local:deep-conditioner",
+      "local:deep-conditioner-2"
+    ],
     "art": {
       "shape": "jar",
       "body": "#F3EBDD",
@@ -785,7 +820,10 @@ export const productSeed: Product[] = [
       "Hibiscus oil"
     ],
     "howToUse": "Smooth a small amount through damp or dry hair. Do not rinse.",
-    "images": [],
+    "images": [
+      "local:leave-in",
+      "local:leave-in-2"
+    ],
     "art": {
       "shape": "pump",
       "body": "#FFFFFF",
@@ -830,7 +868,10 @@ export const productSeed: Product[] = [
       "Lanolin"
     ],
     "howToUse": "Apply a small amount to hair and scalp daily, then style.",
-    "images": [],
+    "images": [
+      "local:hair-cream",
+      "local:hair-cream-2"
+    ],
     "art": {
       "shape": "jar",
       "body": "#FFFFFF",
@@ -916,7 +957,10 @@ export const productSeed: Product[] = [
       "Honey"
     ],
     "howToUse": "Apply a small amount to edges and brush into place.",
-    "images": [],
+    "images": [
+      "local:edge-control",
+      "local:edge-control-2"
+    ],
     "art": {
       "shape": "jar",
       "body": "#DCE3E6",
@@ -1003,7 +1047,9 @@ export const productSeed: Product[] = [
       "Chebe powder"
     ],
     "howToUse": "Apply a few drops to the scalp and massage.",
-    "images": [],
+    "images": [
+      "local:test-sample"
+    ],
     "art": {
       "shape": "dropper",
       "body": "#C8862F",
@@ -1048,7 +1094,9 @@ export const productSeed: Product[] = [
       "Avocado oil"
     ],
     "howToUse": "Wash, condition, deep-treat weekly and finish with the leave-in daily.",
-    "images": [],
+    "images": [
+      "local:wash-day-kit"
+    ],
     "art": {
       "shape": "kit",
       "body": "#C8862F",
@@ -1094,7 +1142,9 @@ export const productSeed: Product[] = [
       "Panthenol"
     ],
     "howToUse": "Neutralize after relaxing, use the mask weekly and the leave-in daily.",
-    "images": [],
+    "images": [
+      "local:relaxer-care-kit"
+    ],
     "art": {
       "shape": "kit",
       "body": "#11606B",

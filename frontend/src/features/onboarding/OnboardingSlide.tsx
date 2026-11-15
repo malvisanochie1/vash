@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
-import { ArtScene } from '@/features/catalog/art/ArtScene';
+import { SceneImage } from '@/features/catalog/art/SceneImage';
 import { palette } from '@/theme';
 import { onboardingSlides } from './slides';
 
@@ -47,7 +47,7 @@ export function OnboardingSlide({ slide, index, width, archWidth, scrollX }: Pro
         ]}
       >
         <Animated.View style={sceneStyle}>
-          <ArtScene productIds={[...slide.productIds]} size={archWidth * 0.98} />
+          <SceneImage scene={slide.scene} size={archWidth * 0.92} />
         </Animated.View>
       </Animated.View>
     </View>

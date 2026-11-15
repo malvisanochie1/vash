@@ -4,7 +4,7 @@ import { Logo } from '@/components/brand/Logo';
 import { Screen } from '@/components/layout/Screen';
 import { Appear } from '@/components/motion/Appear';
 import { Text } from '@/components/ui';
-import { ArtScene } from '@/features/catalog/art/ArtScene';
+import { SceneImage } from '@/features/catalog/art/SceneImage';
 import { useResponsive } from '@/hooks/use-responsive';
 
 interface Props {
@@ -25,7 +25,7 @@ export function AuthLayout({ title, emoji, subtitle, children }: Props) {
           {isTablet && (
             <Appear preset="fade" duration={600} style={{ flex: 1, margin: '2%' }}>
               <View className="flex-1 items-center justify-center overflow-hidden rounded-[40px] bg-blush-200">
-                <ArtScene productIds={['p-leave-in', 'p-protein-mask', 'p-growth-oil']} size={Math.min(width * 0.36, 460)} />
+                <SceneImage scene="treatment" size={Math.min(width * 0.36, 460)} />
               </View>
             </Appear>
           )}

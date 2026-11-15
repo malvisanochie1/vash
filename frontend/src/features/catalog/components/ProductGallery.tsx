@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { resolveImage } from '@/lib/product-images';
 import { palette } from '@/theme';
 import type { Product } from '@/types/domain';
 import { ProductArt } from '../art/ProductArt';
@@ -49,12 +50,12 @@ export function ProductGallery({ product, width, height, scrollY }: Props) {
         onScroll={onScroll}
         scrollEventThrottle={16}
       >
-        {pages.map((ref) => (
-          <View key={ref} style={{ width, height }} className="items-center justify-center">
+        {pages.map((ref, index) => (
+          <View key={ref} style={{ width, height, padding: '6%' }} className="items-center justify-center">
             {ref === 'art' ? (
               <ProductArt art={product.art} size={Math.min(width, height) * 0.86} />
             ) : (
-              <Image source={{ uri: ref }} style={{ width, height }} contentFit="cover" transition={250} />
+              <Image source={resolveImage(ref)} style={{ width: '100%', height: '100%' }} contentFit="contain" transition={250} />
             )}
           </View>
         ))}

@@ -1,21 +1,23 @@
-/** Onboarding story. Each slide is a floating product scene from the catalogue. */
+import type { SceneKey } from '@/lib/product-images';
+
+/** Onboarding story. Each slide shows a floating group of products. */
 export const onboardingSlides = [
   {
     key: 'treatment',
-    productIds: ['p-protein-mask', 'p-relaxer-kit', 'p-growth-oil'],
+    scene: 'treatment',
     title: 'Your crown,\nsoftly cared for',
     body: 'Relaxers, treatments and daily care made for melanin-rich hair.',
   },
   {
     key: 'routine',
-    productIds: ['p-shampoo', 'p-leave-in', 'p-conditioner'],
+    scene: 'routine',
     title: 'A routine\nthat loves you back',
     body: 'Wash, treat and moisturise with hibiscus, amla and shea.',
   },
   {
     key: 'regrowth',
-    productIds: ['p-darkening-cream', 'p-regrowth-serum', 'p-edge-balm'],
+    scene: 'regrowth',
     title: 'Regrow, restore\n& darken',
     body: 'Regrowth serums, edge balms and darkening care — up to 50% off this Black Friday.',
   },
-] as const;
+] as const satisfies readonly { key: string; scene: SceneKey; title: string; body: string }[];

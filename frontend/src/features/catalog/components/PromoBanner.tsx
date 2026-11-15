@@ -5,15 +5,12 @@ import { useEffect } from 'react';
 import { View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { PressableScale, Text } from '@/components/ui';
-import { productSeed } from '@/data/catalog';
-import { ProductArt } from '../art/ProductArt';
+import { SceneImage } from '../art/SceneImage';
 import { palette, shadow } from '@/theme';
 import { campaign } from '../promo';
 import { Countdown } from './Countdown';
 
 /** Campaign hero: animated ribbon, live countdown, floating product. */
-const heroArt = productSeed.find((p) => p.id === campaign.heroProductId)!.art;
-
 export function PromoBanner() {
   const float = useSharedValue(0);
   const shine = useSharedValue(0);
@@ -53,7 +50,7 @@ export function PromoBanner() {
             </View>
             <Animated.View style={[{ width: '46%', alignItems: 'center', justifyContent: 'center' }, floatStyle]}>
               <View className="absolute h-36 w-36 rounded-full bg-white/20" />
-              <ProductArt art={heroArt} size={170} backdrop="none" />
+              <SceneImage scene="banner" size={172} float={false} />
             </Animated.View>
           </View>
         </LinearGradient>

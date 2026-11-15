@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 import { Appear } from '@/components/motion/Appear';
 import { PressableScale, Text } from '@/components/ui';
-import { ProductArt } from '../art/ProductArt';
+import { ProductVisual } from '../art/ProductVisual';
 import { shadow } from '@/theme';
 import { useCategories, useProducts } from '../use-catalog';
 
@@ -20,8 +20,8 @@ export function CategoryRail() {
           >
             <View className="h-[68px] w-[68px] items-center justify-center overflow-hidden rounded-full border-2 border-white bg-blush-100" style={shadow.card}>
               {(() => {
-                const art = products.find((p) => p.id === category.productId)?.art;
-                return art ? <ProductArt art={art} size={60} backdrop="none" /> : null;
+                const product = products.find((p) => p.id === category.productId);
+                return product ? <ProductVisual product={product} size={58} /> : null;
               })()}
             </View>
             <Text className="font-body-medium text-xs">{category.name}</Text>
