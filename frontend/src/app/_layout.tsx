@@ -15,6 +15,7 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ToastHost } from '@/components/ui';
+import { FlyToBagProvider } from '@/features/cart/fly/FlyToBagProvider';
 import { palette } from '@/theme';
 
 void SplashScreen.preventAutoHideAsync();
@@ -43,6 +44,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
+          <FlyToBagProvider>
           <Stack
             screenOptions={{
               headerShown: false,
@@ -57,6 +59,7 @@ export default function RootLayout() {
             <Stack.Screen name="order/[id]/success" options={{ animation: 'fade', gestureEnabled: false }} />
           </Stack>
           <ToastHost />
+          </FlyToBagProvider>
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

@@ -29,6 +29,9 @@ const textColor: Record<Variant, string> = {
   ghost: palette.rose[600],
 };
 
+/** Lets the press pop play before navigating away. */
+const PRESS_DELAY_MS = 140;
+
 export function Button({
   title,
   onPress,
@@ -56,7 +59,8 @@ export function Button({
 
   return (
     <PressableScale
-      onPress={onPress}
+      scaleTo={0.9}
+      onPress={onPress && (() => setTimeout(onPress, PRESS_DELAY_MS))}
       disabled={inactive}
       accessibilityState={{ disabled: inactive, busy: loading }}
       className={cn('overflow-hidden rounded-full', disabled && 'opacity-50', className)}

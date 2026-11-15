@@ -2,13 +2,18 @@ import { router } from 'expo-router';
 import { ArrowRight } from 'lucide-react-native';
 import { useCallback, useEffect, useRef } from 'react';
 import { Pressable, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  cancelAnimation,
+  Easing,
   Extrapolation,
   interpolate,
-  useAnimatedRef,
-  useAnimatedScrollHandler,
+  runOnJS,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
+  withSpring,
+  withTiming,
   type SharedValue,
 } from 'react-native-reanimated';
 import { Logo } from '@/components/brand/Logo';
@@ -21,8 +26,12 @@ import { PagerDots } from '@/features/onboarding/PagerDots';
 import { onboardingSlides } from '@/features/onboarding/slides';
 import { useResponsive } from '@/hooks/use-responsive';
 
-const AUTO_ADVANCE_MS = 3800;
+const AUTO_ADVANCE_MS = 4200;
 const RESUME_AFTER_TOUCH_MS = 6000;
+const SLIDES = onboardingSlides.length;
+/** Calm settle: the slide glides into place without bouncing. */
+const SETTLE = { damping: 28, stiffness: 120, mass: 1 };
+const AUTO_SLIDE = { duration: 950, easing: Easing.bezier(0.45, 0, 0.2, 1) };
 
 function SlideCopy({ index, width, scrollX }: { index: number; width: number; scrollX: SharedValue<number> }) {
   const slide = onboardingSlides[index]!;
@@ -45,33 +54,62 @@ function SlideCopy({ index, width, scrollX }: { index: number; width: number; sc
 
 export default function Welcome() {
   const { width, height } = useResponsive();
-  const scrollRef = useAnimatedRef<Animated.ScrollView>();
-  const scrollX = useSharedValue(0);
-  const page = useRef(0);
+  const translateX = useSharedValue(0);
+  const dragStart = useSharedValue(0);
+  const page = useSharedValue(0);
   const pausedUntil = useRef(0);
+  // Existing slide/copy/dots animations read a scroll-like offset.
+  const scrollX = useDerivedValue(() => -translateX.value);
 
   // Arch scales with the viewport: ~72% of the width, capped by the height on short/wide screens.
   const archWidth = Math.min(width * 0.72, height * 0.36, 400);
 
-  const onScroll = useAnimatedScrollHandler((e) => {
-    scrollX.value = e.contentOffset.x;
-  });
+  const pause = useCallback(() => {
+    pausedUntil.current = Date.now() + RESUME_AFTER_TOUCH_MS;
+  }, []);
 
-  const goTo = useCallback(
-    (index: number) => {
-      page.current = index;
-      scrollRef.current?.scrollTo({ x: index * width, animated: true });
-    },
-    [scrollRef, width],
-  );
+  // Follows the finger 1:1 on the UI thread, rubber-bands at the ends,
+  // then settles on the nearest slide (or the next one on a flick).
+  const swipe = Gesture.Pan()
+    .activeOffsetX([-8, 8])
+    .failOffsetY([-14, 14])
+    .onBegin(() => {
+      cancelAnimation(translateX);
+      dragStart.value = translateX.value;
+      runOnJS(pause)();
+    })
+    .onUpdate((e) => {
+      const min = -(SLIDES - 1) * width;
+      let next = dragStart.value + e.translationX;
+      if (next > 0) next *= 0.3;
+      if (next < min) next = min + (next - min) * 0.3;
+      translateX.value = next;
+    })
+    .onEnd((e) => {
+      const position = -translateX.value / width;
+      let target = Math.round(position);
+      if (Math.abs(e.velocityX) > 450) target = e.velocityX < 0 ? Math.ceil(position) : Math.floor(position);
+      target = Math.max(0, Math.min(SLIDES - 1, target));
+      page.value = target;
+      translateX.value = withSpring(-target * width, { ...SETTLE, velocity: e.velocityX });
+    });
 
   useEffect(() => {
     const timer = setInterval(() => {
       if (Date.now() < pausedUntil.current) return;
-      goTo((page.current + 1) % onboardingSlides.length);
+      const next = (page.value + 1) % SLIDES;
+      page.value = next;
+      translateX.value = withTiming(-next * width, AUTO_SLIDE);
     }, AUTO_ADVANCE_MS);
     return () => clearInterval(timer);
-  }, [goTo]);
+  }, [page, translateX, width]);
+
+  // Keep the current slide aligned if the window is resized (tablet rotation, desktop).
+  useEffect(() => {
+    translateX.value = -page.value * width;
+  }, [page, translateX, width]);
+
+  const track = useAnimatedStyle(() => ({ transform: [{ translateX: translateX.value }] }));
 
   return (
     <Screen edges={['top', 'bottom']}>
@@ -84,26 +122,13 @@ export default function Welcome() {
         </Appear>
 
         <Appear preset="fade" duration={600} delay={120}>
-          <Animated.ScrollView
-            ref={scrollRef}
-            horizontal
-            pagingEnabled
-            decelerationRate="fast"
-            showsHorizontalScrollIndicator={false}
-            onScroll={onScroll}
-            scrollEventThrottle={16}
-            onScrollBeginDrag={() => {
-              pausedUntil.current = Date.now() + RESUME_AFTER_TOUCH_MS;
-            }}
-            onMomentumScrollEnd={(e) => {
-              page.current = Math.round(e.nativeEvent.contentOffset.x / width);
-            }}
-            style={{ flexGrow: 0 }}
-          >
-            {onboardingSlides.map((slide, index) => (
-              <OnboardingSlide key={slide.key} slide={slide} index={index} width={width} archWidth={archWidth} scrollX={scrollX} />
-            ))}
-          </Animated.ScrollView>
+          <GestureDetector gesture={swipe}>
+            <Animated.View style={[{ flexDirection: 'row', width: width * SLIDES }, track]}>
+              {onboardingSlides.map((slide, index) => (
+                <OnboardingSlide key={slide.key} slide={slide} index={index} width={width} archWidth={archWidth} scrollX={scrollX} />
+              ))}
+            </Animated.View>
+          </GestureDetector>
 
           <View style={{ height: Math.max(120, height * 0.15), marginTop: '6%' }}>
             {onboardingSlides.map((slide, index) => (

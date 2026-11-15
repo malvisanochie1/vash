@@ -15,7 +15,7 @@ export function BagItem({ line, index }: { line: CartLine; index: number }) {
   return (
     <Appear delay={Math.min(index, 6) * 60}>
       <View className="flex-row gap-3 rounded-[28px] bg-white p-2.5" style={shadow.card}>
-        <PressableScale haptic={false} onPress={() => router.push(`/product/${line.productId}`)}>
+        <PressableScale onPress={() => router.push(`/product/${line.productId}`)}>
           <View className="overflow-hidden rounded-3xl bg-blush-100">
             <ProductVisual product={line.product} size={96} />
           </View>

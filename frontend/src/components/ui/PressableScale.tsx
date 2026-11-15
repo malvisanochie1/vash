@@ -1,6 +1,5 @@
-import * as Haptics from 'expo-haptics';
 import type { ReactNode } from 'react';
-import { Platform, Pressable, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
+import { Pressable, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { motion } from '@/theme';
 
@@ -8,7 +7,6 @@ interface Props extends Omit<PressableProps, 'style' | 'children'> {
   children?: ReactNode;
   /** How far the element shrinks while pressed. */
   scaleTo?: number;
-  haptic?: boolean;
   /** Classes for the pressable surface itself. */
   className?: string;
   style?: StyleProp<ViewStyle>;
@@ -22,8 +20,7 @@ interface Props extends Omit<PressableProps, 'style' | 'children'> {
  */
 export function PressableScale({
   children,
-  scaleTo = 0.96,
-  haptic = true,
+  scaleTo = 0.94,
   className,
   style,
   wrapperStyle,
@@ -42,17 +39,15 @@ export function PressableScale({
         className={className}
         style={style}
         onPressIn={(e) => {
-          scale.value = withTiming(scaleTo, { duration: 110 });
+          scale.value = withTiming(scaleTo, { duration: 90 });
           onPressIn?.(e);
         }}
         onPressOut={(e) => {
-          scale.value = withSpring(1, motion.spring);
+          // Springy release with a little overshoot: shrink in, pop back out.
+          scale.value = withSpring(1, motion.pop);
           onPressOut?.(e);
         }}
-        onPress={(e) => {
-          if (haptic && Platform.OS !== 'web') void Haptics.selectionAsync();
-          onPress?.(e);
-        }}
+        onPress={onPress}
         {...rest}
       >
         {children}

@@ -1,15 +1,15 @@
 import { router } from 'expo-router';
 import { Plus } from 'lucide-react-native';
+import { memo, useRef, type ComponentRef } from 'react';
 import { View, type DimensionValue } from 'react-native';
 import { Appear } from '@/components/motion/Appear';
-import { memo } from 'react';
 import { Badge, PressableScale, Price, Rating, Text } from '@/components/ui';
 import { useAddToCart } from '@/features/cart/use-add-to-cart';
 import { HeartButton } from '@/features/favorites/components/HeartButton';
 import { percentOff } from '@/lib/format';
-import { ProductVisual } from '../art/ProductVisual';
 import { palette, shadow } from '@/theme';
 import type { Product } from '@/types/domain';
+import { ProductVisual } from '../art/ProductVisual';
 
 interface Props {
   product: Product;
@@ -20,24 +20,24 @@ interface Props {
 
 export const ProductCard = memo(function ProductCard({ product, width, index = 0 }: Props) {
   const addToCart = useAddToCart();
+  const addRef = useRef<ComponentRef<typeof View>>(null);
   const variant = product.variants[0]!;
   const off = percentOff(variant.price, variant.compareAtPrice);
 
   return (
     <Appear delay={Math.min(index, 7) * 60} style={{ width }}>
-      <PressableScale scaleTo={0.97} haptic={false} onPress={() => router.push(`/product/${product.id}`)}>
-        <View className="overflow-hidden rounded-[28px] bg-white p-2" style={shadow.card}>
-          <View className="overflow-hidden rounded-3xl bg-blush-100">
+      <PressableScale scaleTo={0.97} onPress={() => router.push(`/product/${product.id}`)}>
+        <View className="rounded-[28px] bg-white p-2" style={shadow.card}>
+          <View className="overflow-hidden rounded-3xl bg-blush-100" renderToHardwareTextureAndroid>
             <ProductVisual product={product} />
-            <View className="absolute left-2 top-2">
-              {off > 0 && <Badge label={`-${off}%`} tone="solid" />}
-            </View>
-            <View className="absolute right-2 top-2">
-              <HeartButton productId={product.id} size={32} />
-            </View>
+            <View className="absolute left-2 top-2">{off > 0 && <Badge label={`-${off}%`} tone="solid" />}</View>
             <View className="absolute bottom-2 left-2 rounded-full bg-plum-800/80 px-2 py-0.5">
               <Text className="font-body-medium text-[10px] text-white">{variant.label}</Text>
             </View>
+          </View>
+          {/* Outside the clipped image so the love burst can float freely. */}
+          <View className="absolute right-3.5 top-3.5">
+            <HeartButton productId={product.id} size={32} />
           </View>
           <View className="px-1.5 pb-1.5 pt-2.5">
             <Text numberOfLines={1} className="font-body-semibold text-[13px] text-ink">
@@ -47,17 +47,18 @@ export const ProductCard = memo(function ProductCard({ product, width, index = 0
               {product.nickname}
             </Text>
             <View className="mt-1.5 flex-row items-center justify-between">
-              <View>
+              <View className="flex-1">
                 <Price price={variant.price} compareAt={variant.compareAtPrice} />
                 <Rating value={product.rating} />
               </View>
               <PressableScale
-                scaleTo={0.85}
+                scaleTo={0.8}
                 accessibilityLabel={`Add ${product.name} to bag`}
-                onPress={() => addToCart(product)}
-                className="h-9 w-9 items-center justify-center rounded-full bg-rose-500"
+                onPress={() => addToCart(product, { origin: addRef })}
               >
-                <Plus size={18} color={palette.white} strokeWidth={2.6} />
+                <View ref={addRef} collapsable={false} className="h-9 w-9 items-center justify-center rounded-full bg-rose-500">
+                  <Plus size={18} color={palette.white} strokeWidth={2.6} />
+                </View>
               </PressableScale>
             </View>
           </View>

@@ -10,7 +10,6 @@ import { ProductArt } from '../art/ProductArt';
 import { palette, shadow } from '@/theme';
 import { campaign } from '../promo';
 import { Countdown } from './Countdown';
-import { Marquee } from './Marquee';
 
 /** Campaign hero: animated ribbon, live countdown, floating product. */
 const heroArt = productSeed.find((p) => p.id === campaign.heroProductId)!.art;
@@ -32,17 +31,19 @@ export function PromoBanner() {
   }));
 
   return (
-    <PressableScale scaleTo={0.98} haptic={false} onPress={() => router.push(`/product/${campaign.heroProductId}`)}>
+    <PressableScale scaleTo={0.98} onPress={() => router.push(`/product/${campaign.heroProductId}`)}>
       <View className="overflow-hidden rounded-[32px]" style={shadow.button}>
         <LinearGradient colors={[palette.rose[400], palette.rose[600]]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-          <View className="bg-plum-900/25 py-1.5">
-            <Marquee text={campaign.ribbon} />
-          </View>
           <View className="min-h-[178px] flex-row">
             <View className="flex-1 justify-between gap-3 p-5 pr-0">
               <View>
-                <Text className="font-body-semibold text-[10px] uppercase tracking-[2px] text-white/80">{campaign.name}</Text>
-                <Text className="font-display-bold mt-1 text-[28px] leading-8 text-white">{campaign.headline}</Text>
+                <View className="flex-row items-center gap-2">
+                  <View className="rounded-full bg-white px-2.5 py-1">
+                    <Text className="font-body-semibold text-[10px] uppercase tracking-[1.5px] text-rose-600">{campaign.name}</Text>
+                  </View>
+                  <Text className="font-body-medium text-[11px] text-white/90">{campaign.dates}</Text>
+                </View>
+                <Text className="font-display-bold mt-2.5 text-[28px] leading-8 text-white">{campaign.headline}</Text>
                 <Text className="mt-1 text-xs text-white/90">{campaign.body}</Text>
               </View>
               <Countdown endsAt={campaign.endsAt} />

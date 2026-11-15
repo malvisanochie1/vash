@@ -13,9 +13,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Container } from '@/components/layout/Container';
 import { EmptyState } from '@/components/layout/EmptyState';
 import { Screen } from '@/components/layout/Screen';
-import { Button, IconButton, Text, toast } from '@/components/ui';
+import { Button, IconButton, Text } from '@/components/ui';
 import { selectCartCount, useCartStore } from '@/features/cart/cart.store';
-import { useFlyToBag, type Point } from '@/features/cart/components/FlyToBag';
+import type { Point } from '@/features/cart/fly/FlyToBagProvider';
+import { useAddToCart } from '@/features/cart/use-add-to-cart';
+import { useAfterTransition } from '@/hooks/use-after-transition';
 import { AddToBagBar } from '@/features/catalog/components/AddToBagBar';
 import { ProductGallery } from '@/features/catalog/components/ProductGallery';
 import { ProductInfo } from '@/features/catalog/components/ProductInfo';
@@ -23,7 +25,6 @@ import { RoutineRail } from '@/features/catalog/components/RoutineRail';
 import { useProduct, useProducts } from '@/features/catalog/use-catalog';
 import { HeartButton } from '@/features/favorites/components/HeartButton';
 import { useResponsive } from '@/hooks/use-responsive';
-import { ProductVisual } from '@/features/catalog/art/ProductVisual';
 import { palette } from '@/theme';
 import type { ProductVariant } from '@/types/domain';
 
@@ -37,10 +38,10 @@ export default function ProductScreen() {
   const [variantId, setVariantId] = useState<string>();
   const [quantity, setQuantity] = useState(1);
   const cartCount = useCartStore(selectCartCount);
-  const add = useCartStore((s) => s.add);
+  const addToCart = useAddToCart();
+  const ready = useAfterTransition();
   const bagRef = useRef<ComponentRef<typeof View>>(null);
   const scrollY = useSharedValue(0);
-  const { overlay, launch } = useFlyToBag();
 
   const onScroll = useAnimatedScrollHandler((e) => {
     scrollY.value = e.contentOffset.y;
@@ -67,23 +68,13 @@ export default function ProductScreen() {
   }
 
   const variant: ProductVariant = product.variants.find((v) => v.id === variantId) ?? product.variants[0]!;
-  const routine = all.filter((p) => p.id !== product.id);
+  // A short, relevant rail: same category first, then bestsellers.
+  const routine = [
+    ...all.filter((p) => p.id !== product.id && p.category === product.category),
+    ...all.filter((p) => p.id !== product.id && p.category !== product.category && p.featured),
+  ].slice(0, 6);
 
-  const addToBag = (origin: Point) => {
-    bagRef.current?.measureInWindow((x, y, w, h) => {
-      launch({ from: origin, to: { x: x + w / 2, y: y + h / 2 }, visual: <ProductVisual product={product} size={58} /> });
-    });
-    // Commit after the flight lands so the badge bounce lines up with the drop.
-    setTimeout(() => {
-      add({ productId: product.id, variantId: variant.id, quantity });
-      toast.show({
-        title: 'Added to bag',
-        message: `${product.name} · ${variant.label} × ${quantity}`,
-        visual: <ProductVisual product={product} size={44} />,
-        action: { label: 'View', onPress: () => router.push('/(tabs)/bag') },
-      });
-    }, 760);
-  };
+  const addToBag = (origin: Point) => addToCart(product, { variant, quantity, origin, target: bagRef });
 
   const topBar = (
     <View className="absolute inset-x-0 top-0 z-10" style={{ paddingTop: insets.top }}>
@@ -134,11 +125,10 @@ export default function ProductScreen() {
             <View className="flex-1 pt-2">{info}</View>
           </Container>
           <Container className="mt-10">
-            <RoutineRail products={routine} />
+            {ready && <RoutineRail products={routine} />}
           </Container>
         </Animated.ScrollView>
         {bottomBar}
-        {overlay}
       </Screen>
     );
   }
@@ -152,13 +142,12 @@ export default function ProductScreen() {
           <Container>
             {info}
             <View className="mt-8">
-              <RoutineRail products={routine} />
+              {ready && <RoutineRail products={routine} />}
             </View>
           </Container>
         </View>
       </Animated.ScrollView>
       {bottomBar}
-      {overlay}
     </Screen>
   );
 }

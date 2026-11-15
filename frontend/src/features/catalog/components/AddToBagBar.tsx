@@ -6,7 +6,7 @@ import { Appear } from '@/components/motion/Appear';
 import { PressableScale, QuantityStepper, Text } from '@/components/ui';
 import { formatNaira } from '@/lib/format';
 import { gradients, palette, shadow } from '@/theme';
-import type { Point } from '@/features/cart/components/FlyToBag';
+import type { Point } from '@/features/cart/fly/FlyToBagProvider';
 
 interface Props {
   unitPrice: number;

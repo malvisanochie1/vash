@@ -27,7 +27,7 @@ export default function Profile() {
 
   return (
     <Screen>
-      <TabScroll>
+      <TabScroll floatingBag={false}>
         <Reveal className="items-center pt-6">
           <View className="h-24 w-24 items-center justify-center rounded-full bg-blush-200">
             <Text className="font-display-bold text-4xl text-rose-600">{user?.name.charAt(0) ?? 'V'}</Text>

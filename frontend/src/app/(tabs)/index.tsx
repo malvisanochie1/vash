@@ -20,8 +20,9 @@ export default function Home() {
   const user = useAuthStore((s) => s.user);
   const cartCount = useCartStore(selectCartCount);
   const { data: products = [], isLoading } = useProducts();
-  const featured = products.filter((p) => p.featured);
-  const fresh = products.filter((p) => p.isNew);
+  // Home stays light: a curated handful; the full catalogue lives in Shop.
+  const featured = products.filter((p) => p.featured).slice(0, 6);
+  const fresh = products.filter((p) => p.isNew).slice(0, 4);
 
   return (
     <Screen>
@@ -40,7 +41,6 @@ export default function Home() {
         <Reveal index={1} className="mt-5">
           <PressableScale
             scaleTo={0.98}
-            haptic={false}
             onPress={() => router.push({ pathname: '/(tabs)/shop', params: { focus: '1' } })}
             className="h-13 flex-row items-center gap-3 rounded-full bg-white px-5 py-3.5"
             style={shadow.card}

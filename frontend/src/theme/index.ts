@@ -14,6 +14,8 @@ export const motion = {
   spring: { damping: 18, stiffness: 180, mass: 0.9 },
   springSoft: { damping: 22, stiffness: 120 },
   springBouncy: { damping: 9, stiffness: 220 },
+  /** Button release: pops back past full size, then settles. */
+  pop: { damping: 7, stiffness: 320, mass: 0.7 },
   duration: { fast: 180, base: 320, slow: 560 },
   stagger: 70,
 } as const;

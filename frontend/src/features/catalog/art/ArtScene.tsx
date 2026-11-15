@@ -10,7 +10,12 @@ function Floating({ children, delay, offset }: { children: React.ReactNode; dela
     t.value = withDelay(delay, withRepeat(withTiming(1, { duration: 2600, easing: Easing.inOut(Easing.sin) }), -1, true));
   }, [delay, t]);
   const style = useAnimatedStyle(() => ({ transform: [{ translateY: -offset * t.value }] }));
-  return <Animated.View style={style}>{children}</Animated.View>;
+  // Rasterise the static SVG once so floating only moves a cached bitmap.
+  return (
+    <Animated.View style={style} renderToHardwareTextureAndroid shouldRasterizeIOS>
+      {children}
+    </Animated.View>
+  );
 }
 
 /**
