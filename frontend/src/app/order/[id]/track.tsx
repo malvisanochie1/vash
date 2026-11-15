@@ -11,15 +11,12 @@ import { RiderCard } from '@/features/orders/components/RiderCard';
 import { RouteMap } from '@/features/orders/components/RouteMap';
 import { statusIndex, statusLabel, ORDER_STEPS } from '@/features/orders/order-status';
 import { useOrder } from '@/features/orders/use-orders';
-import { useResponsive } from '@/hooks/use-responsive';
 import { formatNaira } from '@/lib/format';
 import { palette, shadow } from '@/theme';
 
 export default function TrackOrder() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: order, isLoading } = useOrder(id, { live: true });
-  const { contentWidth, gutter } = useResponsive();
-  const mapWidth = Math.min(contentWidth, 560) - gutter * 2;
 
   if (isLoading || !order) {
     return (
@@ -51,7 +48,7 @@ export default function TrackOrder() {
           </Reveal>
 
           <Reveal index={1}>
-            <RouteMap progress={progress} width={mapWidth} />
+            <RouteMap progress={progress} />
           </Reveal>
 
           <Reveal index={2} className="rounded-[28px] bg-white p-5" style={shadow.card}>

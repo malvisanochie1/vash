@@ -1,5 +1,5 @@
 import { Bike, Home, Store } from 'lucide-react-native';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import Animated, {
   Easing,
@@ -29,7 +29,16 @@ const TOTAL = segmentLengths.reduce((a, b) => a + b, 0);
 const PATH = ROUTE.map(([x, y], i) => `${i ? 'L' : 'M'}${x} ${y}`).join(' ');
 
 /** Stylised city map: the route draws itself and the rider glides along it. */
-export function RouteMap({ progress, width }: { progress: number; width: number }) {
+export function RouteMap({ progress }: { progress: number }) {
+  const [width, setWidth] = useState(0);
+  return (
+    <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)} style={{ width: '100%', aspectRatio: 320 / 180 }}>
+      {width > 0 && <RouteMapCanvas progress={progress} width={width} />}
+    </View>
+  );
+}
+
+function RouteMapCanvas({ progress, width }: { progress: number; width: number }) {
   const height = width * (180 / 320);
   const scale = width / 320;
   const draw = useSharedValue(0);
@@ -108,13 +117,15 @@ export function RouteMap({ progress, width }: { progress: number; width: number 
       </View>
 
       <View className="absolute items-center justify-center" style={{ left: endX * scale - 16, top: endY * scale - 16, width: 32, height: 32 }}>
-        <Animated.View className="absolute h-8 w-8 rounded-full bg-rose-400" style={pulseStyle} />
+        <Animated.View style={[{ position: 'absolute', width: 32, height: 32, borderRadius: 16, backgroundColor: palette.rose[400] }, pulseStyle]} />
         <View className="h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-rose-500">
           <Home size={14} color={palette.white} />
         </View>
       </View>
 
-      <Animated.View className="absolute left-0 top-0 h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-rose-500 bg-white" style={riderStyle}>
+      <Animated.View
+        style={[{ position: 'absolute', left: 0, top: 0, width: 34, height: 34, borderRadius: 17, borderWidth: 2, borderColor: palette.rose[500], backgroundColor: palette.white, alignItems: 'center', justifyContent: 'center' }, riderStyle]}
+      >
         <Bike size={17} color={palette.rose[600]} />
       </Animated.View>
     </View>

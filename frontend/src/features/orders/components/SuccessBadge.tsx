@@ -34,10 +34,10 @@ export function SuccessBadge({ size = 120 }: { size?: number }) {
   const checkProps = useAnimatedProps(() => ({ strokeDashoffset: CHECK_LENGTH * (1 - draw.value) }));
 
   return (
-    <View style={{ width: size, height: size }} className="items-center justify-center">
-      <Animated.View className="absolute rounded-full bg-rose-300" style={[{ width: size, height: size }, haloStyle]} />
-      <Animated.View style={[popStyle, shadow.button]} className="overflow-hidden rounded-full">
-        <LinearGradient colors={gradients.primary} style={{ width: size, height: size }} className="items-center justify-center">
+    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+      <Animated.View style={[{ position: 'absolute', width: size, height: size, borderRadius: size / 2, backgroundColor: palette.rose[300] }, haloStyle]} />
+      <Animated.View style={[{ borderRadius: size / 2, overflow: 'hidden' }, popStyle, shadow.button]}>
+        <LinearGradient colors={gradients.primary} style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
           <Svg width={size * 0.45} height={size * 0.45} viewBox="0 0 48 48">
             <AnimatedPath
               d="M10 25 L20 35 L38 14"

@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { BadgePercent, X } from 'lucide-react-native';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, TextInput, View } from 'react-native';
-import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
+import { Appear } from '@/components/motion/Appear';
 import { PressableScale, Text } from '@/components/ui';
 import { formatNaira } from '@/lib/format';
 import { api } from '@/services';
@@ -23,7 +23,7 @@ export function PromoCodeField({ subtotal, discount }: { subtotal: number; disco
 
   if (promo) {
     return (
-      <Animated.View entering={FadeInDown.springify()} exiting={FadeOut} className="flex-row items-center gap-3 rounded-3xl border border-dashed border-rose-300 bg-blush-100 px-4 py-3">
+      <Appear preset="up" className="flex-row items-center gap-3 rounded-3xl border border-dashed border-rose-300 bg-blush-100 px-4 py-3">
         <BadgePercent size={20} color={palette.rose[500]} />
         <View className="flex-1">
           <Text className="font-body-semibold tracking-[2px] text-rose-600">{promo.code}</Text>
@@ -34,7 +34,7 @@ export function PromoCodeField({ subtotal, discount }: { subtotal: number; disco
         <Pressable onPress={() => applyPromo(null)} hitSlop={10} accessibilityLabel="Remove promo code">
           <X size={18} color={palette.muted} />
         </Pressable>
-      </Animated.View>
+      </Appear>
     );
   }
 
@@ -49,21 +49,21 @@ export function PromoCodeField({ subtotal, discount }: { subtotal: number; disco
           placeholderTextColor={palette.muted}
           autoCapitalize="characters"
           className="h-full flex-1 font-body-semibold text-[13px] tracking-[1px] text-ink"
-          style={{ outlineStyle: 'none' } as object}
+          style={{ outlineStyle: 'none', minWidth: 0 } as object}
           onSubmitEditing={() => code && validate.mutate()}
         />
         <PressableScale
           disabled={!code || validate.isPending}
           onPress={() => validate.mutate()}
-          className="h-11 items-center justify-center rounded-full bg-plum-800 px-5"
+          className="h-11 shrink-0 items-center justify-center rounded-full bg-plum-800 px-5"
         >
           {validate.isPending ? <ActivityIndicator color={palette.white} size="small" /> : <Text className="font-body-semibold text-xs text-white">Apply</Text>}
         </PressableScale>
       </View>
       {validate.error && (
-        <Animated.View entering={FadeInDown}>
+        <Appear preset="down" distance={6}>
           <Text className="ml-4 mt-1.5 text-xs text-rose-600">{validate.error.message}</Text>
-        </Animated.View>
+        </Appear>
       )}
     </View>
   );

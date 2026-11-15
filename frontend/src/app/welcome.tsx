@@ -1,11 +1,9 @@
 import { router } from 'expo-router';
 import { ArrowRight } from 'lucide-react-native';
-import { useEffect, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { useCallback, useEffect, useRef } from 'react';
+import { Pressable, View } from 'react-native';
 import Animated, {
   Extrapolation,
-  FadeInDown,
-  FadeInUp,
   interpolate,
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -15,101 +13,117 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Logo } from '@/components/brand/Logo';
 import { Screen } from '@/components/layout/Screen';
+import { Appear } from '@/components/motion/Appear';
 import { Button, Text } from '@/components/ui';
-import { useAuthStore } from '@/features/auth/auth.store';
+import { brand } from '@/config/brand';
 import { OnboardingSlide } from '@/features/onboarding/OnboardingSlide';
 import { PagerDots } from '@/features/onboarding/PagerDots';
 import { onboardingSlides } from '@/features/onboarding/slides';
-import { brand } from '@/config/brand';
 import { useResponsive } from '@/hooks/use-responsive';
 
-const AUTO_ADVANCE_MS = 4200;
+const AUTO_ADVANCE_MS = 3800;
+const RESUME_AFTER_TOUCH_MS = 6000;
 
 function SlideCopy({ index, width, scrollX }: { index: number; width: number; scrollX: SharedValue<number> }) {
   const slide = onboardingSlides[index]!;
   const style = useAnimatedStyle(() => {
-    const input = [(index - 0.6) * width, index * width, (index + 0.6) * width];
+    const range = [(index - 0.6) * width, index * width, (index + 0.6) * width];
     return {
-      opacity: interpolate(scrollX.value, input, [0, 1, 0], Extrapolation.CLAMP),
-      transform: [{ translateY: interpolate(scrollX.value, input, [16, 0, -16], Extrapolation.CLAMP) }],
+      opacity: interpolate(scrollX.value, range, [0, 1, 0], Extrapolation.CLAMP),
+      transform: [{ translateY: interpolate(scrollX.value, range, [14, 0, -14], Extrapolation.CLAMP) }],
     };
   });
   return (
-    <Animated.View style={style} className="absolute inset-x-0 items-center px-8" pointerEvents="none">
+    <Animated.View pointerEvents="none" style={[{ position: 'absolute', left: 0, right: 0, top: 0, alignItems: 'center', paddingHorizontal: '8%' }, style]}>
       <Text variant="hero" className="text-center">
         {slide.title}
       </Text>
-      <Text className="mt-3 max-w-[320px] text-center text-muted">{slide.body}</Text>
+      <Text className="mt-3 text-center text-muted">{slide.body}</Text>
     </Animated.View>
   );
 }
 
 export default function Welcome() {
   const { width, height } = useResponsive();
-  const completeOnboarding = useAuthStore((s) => s.completeOnboarding);
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollX = useSharedValue(0);
-  const [page, setPage] = useState(0);
-  const userInteracted = useRef(false);
+  const page = useRef(0);
+  const pausedUntil = useRef(0);
 
-  const archWidth = Math.min(width * 0.74, height * 0.36, 380);
+  // Arch scales with the viewport: ~72% of the width, capped by the height on short/wide screens.
+  const archWidth = Math.min(width * 0.72, height * 0.36, 400);
 
   const onScroll = useAnimatedScrollHandler((e) => {
     scrollX.value = e.contentOffset.x;
   });
 
+  const goTo = useCallback(
+    (index: number) => {
+      page.current = index;
+      scrollRef.current?.scrollTo({ x: index * width, animated: true });
+    },
+    [scrollRef, width],
+  );
+
   useEffect(() => {
     const timer = setInterval(() => {
-      if (userInteracted.current) return;
-      const next = (page + 1) % onboardingSlides.length;
-      scrollRef.current?.scrollTo({ x: next * width, animated: true });
+      if (Date.now() < pausedUntil.current) return;
+      goTo((page.current + 1) % onboardingSlides.length);
     }, AUTO_ADVANCE_MS);
     return () => clearInterval(timer);
-  }, [page, scrollRef, width]);
-
-  const start = () => {
-    completeOnboarding();
-    router.replace('/login');
-  };
+  }, [goTo]);
 
   return (
     <Screen edges={['top', 'bottom']}>
-      <Animated.View entering={FadeInDown.duration(500)} className="items-center pt-3">
-        <Logo size={36} />
-      </Animated.View>
+      <View className="flex-1 justify-between" style={{ paddingVertical: '3%' }}>
+        <Appear preset="down" className="items-center">
+          <Logo size={36} />
+          <View className="mt-4 rounded-full bg-white px-4 py-1.5">
+            <Text className="font-body-medium text-[11px] text-rose-600">✨ {brand.promise}</Text>
+          </View>
+        </Appear>
 
-      <Animated.View entering={FadeInUp.delay(150).duration(500)} className="mt-5 self-center rounded-full bg-white px-4 py-1.5">
-        <Text className="font-body-medium text-[11px] text-rose-600">✨ {brand.promise}</Text>
-      </Animated.View>
+        <Appear preset="fade" duration={600} delay={120}>
+          <Animated.ScrollView
+            ref={scrollRef}
+            horizontal
+            pagingEnabled
+            decelerationRate="fast"
+            showsHorizontalScrollIndicator={false}
+            onScroll={onScroll}
+            scrollEventThrottle={16}
+            onScrollBeginDrag={() => {
+              pausedUntil.current = Date.now() + RESUME_AFTER_TOUCH_MS;
+            }}
+            onMomentumScrollEnd={(e) => {
+              page.current = Math.round(e.nativeEvent.contentOffset.x / width);
+            }}
+            style={{ flexGrow: 0 }}
+          >
+            {onboardingSlides.map((slide, index) => (
+              <OnboardingSlide key={slide.key} slide={slide} index={index} width={width} archWidth={archWidth} scrollX={scrollX} />
+            ))}
+          </Animated.ScrollView>
 
-      <View className="flex-1 justify-center">
-        <Animated.ScrollView
-          ref={scrollRef}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={onScroll}
-          scrollEventThrottle={16}
-          onScrollBeginDrag={() => (userInteracted.current = true)}
-          onMomentumScrollEnd={(e) => setPage(Math.round(e.nativeEvent.contentOffset.x / width))}
-          className="flex-grow-0"
-        >
-          {onboardingSlides.map((slide, index) => (
-            <OnboardingSlide key={slide.key} slide={slide} index={index} width={width} archWidth={archWidth} scrollX={scrollX} />
-          ))}
-        </Animated.ScrollView>
+          <View style={{ height: Math.max(120, height * 0.15), marginTop: '6%' }}>
+            {onboardingSlides.map((slide, index) => (
+              <SlideCopy key={slide.key} index={index} width={width} scrollX={scrollX} />
+            ))}
+          </View>
+        </Appear>
 
-        <View className="mt-7 h-[130px]">
-          {onboardingSlides.map((slide, index) => (
-            <SlideCopy key={slide.key} index={index} width={width} scrollX={scrollX} />
-          ))}
-        </View>
+        <Appear preset="up" delay={240} style={{ width: '100%', maxWidth: 460, alignSelf: 'center', paddingHorizontal: '6%' }}>
+          <PagerDots count={onboardingSlides.length} width={width} scrollX={scrollX} />
+          <View className="mt-5">
+            <Button title="Get Started" trailingIcon={ArrowRight} onPress={() => router.push('/register')} />
+          </View>
+          <Pressable onPress={() => router.push('/login')} className="mt-3 items-center py-2" hitSlop={8}>
+            <Text className="text-muted">
+              I already have an account · <Text className="font-body-semibold text-rose-600">Sign in</Text>
+            </Text>
+          </Pressable>
+        </Appear>
       </View>
-
-      <Animated.View entering={FadeInUp.delay(300).springify()} className="w-full max-w-[460px] self-center gap-5 px-6 pb-4">
-        <PagerDots count={onboardingSlides.length} width={width} scrollX={scrollX} />
-        <Button title="Get Started" trailingIcon={ArrowRight} onPress={start} />
-      </Animated.View>
     </Screen>
   );
 }

@@ -19,7 +19,7 @@ export function Marquee({ text, speed = 40 }: { text: string; speed?: number }) 
 
   return (
     <View className="overflow-hidden">
-      <Animated.View className="flex-row" style={style}>
+      <Animated.View style={[{ flexDirection: 'row' }, style]}>
         {[0, 1].map((i) => (
           <Text
             key={i}

@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useId } from 'react';
 import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Path, Rect, Stop, Text as SvgText } from 'react-native-svg';
 import { brand } from '@/config/brand';
 import { palette } from '@/theme';
@@ -193,15 +193,16 @@ const shapes: Record<ArtShape, (ctx: Ctx) => React.ReactElement> = {
 
 interface Props {
   art: ArtSpec;
-  size: number;
+  /** Pixel size; omit to fill the parent (use with an aspect-ratio box). */
+  size?: number;
   /** Backdrop style: soft blush disc, or none (for composed scenes). */
   backdrop?: 'disc' | 'none';
 }
 
 export const ProductArt = memo(function ProductArt({ art, size, backdrop = 'disc' }: Props) {
-  const id = `g-${art.shape}-${art.body.slice(1)}`;
+  const id = `art-${useId().replace(/:/g, '')}`;
   return (
-    <Svg width={size} height={size} viewBox="0 0 200 200">
+    <Svg width={size ?? '100%'} height={size ?? '100%'} viewBox="0 0 200 200">
       <Defs>
         <LinearGradient id={id} x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0" stopColor={palette.white} stopOpacity={0.9} />

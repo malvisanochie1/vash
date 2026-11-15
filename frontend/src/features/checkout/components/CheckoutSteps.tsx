@@ -1,7 +1,8 @@
 import { Check } from 'lucide-react-native';
 import { Fragment } from 'react';
 import { View } from 'react-native';
-import Animated, { useAnimatedStyle, useDerivedValue, withTiming, ZoomIn } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useDerivedValue, withTiming } from 'react-native-reanimated';
+import { Appear } from '@/components/motion/Appear';
 import { Text } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { palette } from '@/theme';
@@ -13,7 +14,7 @@ function Connector({ filled }: { filled: boolean }) {
   const style = useAnimatedStyle(() => ({ width: `${p.value * 100}%` }));
   return (
     <View className="mx-2 h-[2px] flex-1 overflow-hidden rounded-full bg-blush-300">
-      <Animated.View className="h-full bg-rose-500" style={style} />
+      <Animated.View style={[{ height: '100%', backgroundColor: palette.rose[500] }, style]} />
     </View>
   );
 }
@@ -36,9 +37,9 @@ export function CheckoutSteps({ current }: { current: number }) {
                 )}
               >
                 {done ? (
-                  <Animated.View entering={ZoomIn.springify()}>
+                  <Appear preset="scale" duration={260}>
                     <Check size={13} color={palette.white} strokeWidth={3} />
-                  </Animated.View>
+                  </Appear>
                 ) : (
                   <Text className={cn('font-body-semibold text-[11px]', active ? 'text-white' : 'text-muted')}>{i + 1}</Text>
                 )}

@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { Trash2 } from 'lucide-react-native';
 import { View } from 'react-native';
-import Animated, { FadeInDown, LinearTransition, SlideOutLeft } from 'react-native-reanimated';
+import { Appear } from '@/components/motion/Appear';
 import { PressableScale, Price, QuantityStepper, Text } from '@/components/ui';
 import { ProductVisual } from '@/features/catalog/art/ProductVisual';
 import { palette, shadow } from '@/theme';
@@ -13,11 +13,7 @@ export function BagItem({ line, index }: { line: CartLine; index: number }) {
   const remove = useCartStore((s) => s.remove);
 
   return (
-    <Animated.View
-      entering={FadeInDown.delay(index * 70).springify()}
-      exiting={SlideOutLeft.duration(260)}
-      layout={LinearTransition.springify()}
-    >
+    <Appear delay={Math.min(index, 6) * 60}>
       <View className="flex-row gap-3 rounded-[28px] bg-white p-2.5" style={shadow.card}>
         <PressableScale haptic={false} onPress={() => router.push(`/product/${line.productId}`)}>
           <View className="overflow-hidden rounded-3xl bg-blush-100">
@@ -49,6 +45,6 @@ export function BagItem({ line, index }: { line: CartLine; index: number }) {
           </View>
         </View>
       </View>
-    </Animated.View>
+    </Appear>
   );
 }

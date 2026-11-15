@@ -1,5 +1,4 @@
 import '@/styles/global.css';
-import '@/lib/styling';
 
 import {
   PlayfairDisplay_500Medium_Italic,
@@ -46,7 +45,7 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerShown: false,
-              animation: 'fade_from_bottom',
+              animation: 'ios_from_right',
               contentStyle: { backgroundColor: palette.blush[50] },
             }}
           >

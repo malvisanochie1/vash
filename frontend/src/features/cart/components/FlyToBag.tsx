@@ -59,8 +59,24 @@ export function useFlyToBag(onLand?: () => void) {
   const overlay = flight ? (
     <Animated.View
       pointerEvents="none"
-      className="absolute left-0 top-0 z-50 items-center justify-center overflow-hidden rounded-full border-[3px] border-white"
-      style={[{ width: SIZE, height: SIZE, backgroundColor: palette.blush[200] }, style]}
+      style={[
+        {
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          zIndex: 50,
+          width: SIZE,
+          height: SIZE,
+          borderRadius: SIZE / 2,
+          borderWidth: 3,
+          borderColor: palette.white,
+          backgroundColor: palette.blush[200],
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+        },
+        style,
+      ]}
     >
       {flight.visual}
     </Animated.View>

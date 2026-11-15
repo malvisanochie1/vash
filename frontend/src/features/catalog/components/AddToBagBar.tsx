@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Check, ShoppingBag } from 'lucide-react-native';
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import { View } from 'react-native';
-import Animated, { FadeIn, FadeOut, LinearTransition, ZoomIn } from 'react-native-reanimated';
+import { Appear } from '@/components/motion/Appear';
 import { PressableScale, QuantityStepper, Text } from '@/components/ui';
 import { formatNaira } from '@/lib/format';
 import { gradients, palette, shadow } from '@/theme';
@@ -35,32 +35,32 @@ export function AddToBagBar({ unitPrice, quantity, onQuantityChange, onAdd }: Pr
   return (
     <View className="flex-row items-center gap-3 rounded-full bg-white p-2" style={shadow.card}>
       <QuantityStepper value={quantity} onChange={onQuantityChange} />
-      <Animated.View layout={LinearTransition.springify()} className="flex-1">
+      <View className="flex-1">
         <PressableScale onPress={press} disabled={added} style={added ? undefined : shadow.button}>
           <View ref={buttonRef} collapsable={false} className="overflow-hidden rounded-full">
             <LinearGradient
               colors={added ? [palette.plum[700], palette.plum[800]] : gradients.primary}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              className="h-[52px] flex-row items-center justify-center gap-2 rounded-full px-4"
+              style={{ height: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 999, paddingHorizontal: 16 }}
             >
               {added ? (
-                <Animated.View key="added" entering={ZoomIn.springify().damping(12)} exiting={FadeOut} className="flex-row items-center gap-2">
+                <Appear key="added" preset="scale" duration={280} className="flex-row items-center gap-2">
                   <Check size={18} color={palette.white} strokeWidth={3} />
                   <Text className="font-body-semibold text-[15px] text-white">Added to bag</Text>
-                </Animated.View>
+                </Appear>
               ) : (
-                <Animated.View key="add" entering={FadeIn} className="flex-row items-center gap-2">
+                <Appear key="add" preset="fade" duration={240} className="flex-row items-center gap-2">
                   <ShoppingBag size={18} color={palette.white} />
                   <Text numberOfLines={1} className="font-body-semibold text-[15px] text-white">
                     Add · {formatNaira(unitPrice * quantity)}
                   </Text>
-                </Animated.View>
+                </Appear>
               )}
             </LinearGradient>
           </View>
         </PressableScale>
-      </Animated.View>
+      </View>
     </View>
   );
 }

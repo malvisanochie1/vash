@@ -1,7 +1,7 @@
 import { MapPin, Phone, User } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
-import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import { Appear } from '@/components/motion/Appear';
 import { Button, Input, Text } from '@/components/ui';
 import { palette, shadow } from '@/theme';
 import type { Address } from '@/types/domain';
@@ -27,9 +27,9 @@ export function AddressCard({ value, onChange, startEditing }: Props) {
   const setAddress = (patch: Partial<Address>) => setDraft((d) => ({ ...d, address: { ...d.address, ...patch } }));
 
   return (
-    <Animated.View layout={LinearTransition.springify()} className="rounded-3xl bg-white p-4" style={shadow.card}>
+    <View className="rounded-3xl bg-white p-4" style={shadow.card}>
       {editing ? (
-        <Animated.View key="edit" entering={FadeIn} exiting={FadeOut} className="gap-3">
+        <Appear key="edit" preset="fade" duration={260} className="gap-3">
           <Input icon={User} placeholder="Recipient name" value={draft.recipient} onChangeText={(recipient) => setDraft((d) => ({ ...d, recipient }))} />
           <Input icon={MapPin} placeholder="Street address" value={draft.address.line1} onChangeText={(line1) => setAddress({ line1 })} />
           <View className="flex-row gap-3">
@@ -51,9 +51,9 @@ export function AddressCard({ value, onChange, startEditing }: Props) {
               setEditing(false);
             }}
           />
-        </Animated.View>
+        </Appear>
       ) : (
-        <Animated.View key="view" entering={FadeIn} className="flex-row items-start gap-3">
+        <Appear key="view" preset="fade" duration={260} className="flex-row items-start gap-3">
           <View className="h-11 w-11 items-center justify-center rounded-2xl bg-blush-200">
             <MapPin size={20} color={palette.rose[600]} />
           </View>
@@ -67,8 +67,8 @@ export function AddressCard({ value, onChange, startEditing }: Props) {
           <Pressable onPress={() => setEditing(true)} hitSlop={10}>
             <Text className="font-body-semibold text-xs text-rose-600">Change</Text>
           </Pressable>
-        </Animated.View>
+        </Appear>
       )}
-    </Animated.View>
+    </View>
   );
 }

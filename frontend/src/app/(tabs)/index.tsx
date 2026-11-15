@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { Search, ShoppingBag } from 'lucide-react-native';
 import { View } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Appear } from '@/components/motion/Appear';
 import { Screen } from '@/components/layout/Screen';
 import { TabScroll } from '@/components/layout/TabScroll';
 import { Reveal } from '@/components/motion/Reveal';
@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <Screen>
       <TabScroll>
-        <Animated.View entering={FadeInDown.duration(500)} className="flex-row items-center gap-3 pt-3">
+        <Appear preset="down" className="flex-row items-center gap-3 pt-3">
           <View className="h-12 w-12 items-center justify-center rounded-full bg-blush-200">
             <Text className="font-display-bold text-lg text-rose-600">{firstName(user?.name).charAt(0)}</Text>
           </View>
@@ -35,7 +35,7 @@ export default function Home() {
             <Text variant="heading">Ready for wash day?</Text>
           </View>
           <IconButton icon={ShoppingBag} badge={cartCount} accessibilityLabel="Open bag" onPress={() => router.push('/(tabs)/bag')} />
-        </Animated.View>
+        </Appear>
 
         <Reveal index={1} className="mt-5">
           <PressableScale

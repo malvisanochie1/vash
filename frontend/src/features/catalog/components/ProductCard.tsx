@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
 import { Plus } from 'lucide-react-native';
-import { View } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { View, type DimensionValue } from 'react-native';
+import { Appear } from '@/components/motion/Appear';
+import { memo } from 'react';
 import { Badge, PressableScale, Price, Rating, Text } from '@/components/ui';
 import { useAddToCart } from '@/features/cart/use-add-to-cart';
 import { HeartButton } from '@/features/favorites/components/HeartButton';
@@ -12,21 +13,22 @@ import type { Product } from '@/types/domain';
 
 interface Props {
   product: Product;
-  width: number;
+  /** Card width — a percentage inside grids, or pixels inside rails. */
+  width: DimensionValue;
   index?: number;
 }
 
-export function ProductCard({ product, width, index = 0 }: Props) {
+export const ProductCard = memo(function ProductCard({ product, width, index = 0 }: Props) {
   const addToCart = useAddToCart();
   const variant = product.variants[0]!;
   const off = percentOff(variant.price, variant.compareAtPrice);
 
   return (
-    <Animated.View entering={FadeInDown.delay(80 + index * 70).springify().damping(16)} style={{ width }}>
+    <Appear delay={Math.min(index, 7) * 60} style={{ width }}>
       <PressableScale scaleTo={0.97} haptic={false} onPress={() => router.push(`/product/${product.id}`)}>
         <View className="overflow-hidden rounded-[28px] bg-white p-2" style={shadow.card}>
-          <View className="items-center justify-center overflow-hidden rounded-3xl bg-blush-100" style={{ height: width - 16 }}>
-            <ProductVisual product={product} size={width - 16} />
+          <View className="overflow-hidden rounded-3xl bg-blush-100">
+            <ProductVisual product={product} />
             <View className="absolute left-2 top-2">
               {off > 0 && <Badge label={`-${off}%`} tone="solid" />}
             </View>
@@ -61,6 +63,6 @@ export function ProductCard({ product, width, index = 0 }: Props) {
           </View>
         </View>
       </PressableScale>
-    </Animated.View>
+    </Appear>
   );
-}
+});

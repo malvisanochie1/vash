@@ -1,26 +1,23 @@
 import type { ReactNode } from 'react';
-import type { ViewProps } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import type { StyleProp, ViewStyle } from 'react-native';
 import { motion } from '@/theme';
+import { Appear } from './Appear';
 
-interface Props extends ViewProps {
+interface Props {
   children: ReactNode;
   /** Position in a staggered sequence. */
   index?: number;
   className?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
+const MAX_STAGGER_STEPS = 8;
+
 /** Content rises softly into place; pass `index` to stagger siblings. */
-export function Reveal({ children, index = 0, ...rest }: Props) {
+export function Reveal({ children, index = 0, className, style }: Props) {
   return (
-    <Animated.View
-      entering={FadeInDown.delay(index * motion.stagger)
-        .springify()
-        .damping(motion.spring.damping)
-        .stiffness(motion.spring.stiffness)}
-      {...rest}
-    >
+    <Appear delay={Math.min(index, MAX_STAGGER_STEPS) * motion.stagger} className={className} style={style}>
       {children}
-    </Animated.View>
+    </Appear>
   );
 }

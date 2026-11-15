@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
-import Animated, { FadeInRight } from 'react-native-reanimated';
+import { Appear } from '@/components/motion/Appear';
 import { PressableScale, Text } from '@/components/ui';
 import { ProductArt } from '../art/ProductArt';
 import { shadow } from '@/theme';
@@ -13,7 +13,7 @@ export function CategoryRail() {
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-4 pr-4">
       {categories.map((category, index) => (
-        <Animated.View key={category.id} entering={FadeInRight.delay(index * 80).springify()}>
+        <Appear key={category.id} preset="left" delay={index * 60}>
           <PressableScale
             className="items-center gap-2"
             onPress={() => router.push({ pathname: '/(tabs)/shop', params: { category: category.id } })}
@@ -26,7 +26,7 @@ export function CategoryRail() {
             </View>
             <Text className="font-body-medium text-xs">{category.name}</Text>
           </PressableScale>
-        </Animated.View>
+        </Appear>
       ))}
     </ScrollView>
   );

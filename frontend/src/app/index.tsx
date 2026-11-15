@@ -6,8 +6,8 @@ import { SplashIntro } from '@/features/onboarding/SplashIntro';
 export default function Index() {
   const goNext = () => {
     const route = () => {
-      const { token, hasOnboarded } = useAuthStore.getState();
-      router.replace(token ? '/(tabs)' : hasOnboarded ? '/login' : '/welcome');
+      // Signed-in users go straight to the shop; everyone else sees the intro on every launch.
+      router.replace(useAuthStore.getState().token ? '/(tabs)' : '/welcome');
     };
     if (useAuthStore.persist.hasHydrated()) route();
     else useAuthStore.persist.onFinishHydration(route);

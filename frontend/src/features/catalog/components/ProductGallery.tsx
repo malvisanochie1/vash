@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { palette } from '@/theme';
 import type { Product } from '@/types/domain';
 import { ProductArt } from '../art/ProductArt';
 import { View } from 'react-native';
@@ -40,7 +41,7 @@ export function ProductGallery({ product, width, height, scrollY }: Props) {
   });
 
   return (
-    <Animated.View style={[{ width, height }, parallax]} className="bg-blush-100">
+    <Animated.View style={[{ width, height, backgroundColor: palette.blush[100] }, parallax]}>
       <Animated.ScrollView
         horizontal
         pagingEnabled

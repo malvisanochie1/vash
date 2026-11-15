@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import { palette } from '@/theme';
 
@@ -33,9 +33,9 @@ function Piece({ p }: { p: Particle }) {
   });
 
   return (
-    <Animated.Text className="absolute" style={[{ fontSize: p.size, color: p.color }, style]}>
-      {p.glyph}
-    </Animated.Text>
+    <Animated.View style={[{ position: 'absolute' }, style]}>
+      <Text style={{ fontSize: p.size, color: p.color }}>{p.glyph}</Text>
+    </Animated.View>
   );
 }
 

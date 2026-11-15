@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
+import { Appear } from '@/components/motion/Appear';
 import { cn } from '@/lib/cn';
 import { formatNaira, percentOff } from '@/lib/format';
 import { Text } from './Text';
@@ -16,11 +16,11 @@ export function Price({ price, compareAt, size = 'sm', className }: Props) {
   const off = percentOff(price, compareAt);
   return (
     <View className={cn('flex-row items-center gap-2', className)}>
-      <Animated.View key={price} entering={FadeInUp.duration(260)} exiting={FadeOutDown.duration(160)}>
+      <Appear key={price} preset="up" distance={8} duration={260}>
         <Text className={cn('font-body-semibold text-rose-600', size === 'lg' ? 'text-[26px]' : 'text-[15px]')}>
           {formatNaira(price)}
         </Text>
-      </Animated.View>
+      </Appear>
       {off > 0 && (
         <>
           <Text className={cn('text-muted line-through', size === 'lg' ? 'text-sm' : 'text-[11px]')}>

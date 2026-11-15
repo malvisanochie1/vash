@@ -1,13 +1,7 @@
 import type { LucideIcon } from 'lucide-react-native';
-import { useEffect, type ComponentRef, type Ref } from 'react';
+import { useEffect, useRef, type ComponentRef, type Ref } from 'react';
 import { View } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withSpring,
-  ZoomIn,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated';
 import { cn } from '@/lib/cn';
 import { motion, palette, shadow } from '@/theme';
 import { PressableScale } from './PressableScale';
@@ -40,8 +34,12 @@ export function IconButton({
   filled,
 }: Props) {
   const bump = useSharedValue(1);
+  const previous = useRef(badge);
   useEffect(() => {
-    if (badge) bump.value = withSequence(withSpring(1.35, motion.springBouncy), withSpring(1, motion.spring));
+    if (badge && badge !== previous.current) {
+      bump.value = withSequence(withTiming(1.3, { duration: 140 }), withSpring(1, motion.spring));
+    }
+    previous.current = badge;
   }, [badge, bump]);
   const bumpStyle = useAnimatedStyle(() => ({ transform: [{ scale: bump.value }] }));
 
@@ -65,13 +63,9 @@ export function IconButton({
           <Icon size={size * 0.42} color={color} fill={filled ? color : 'transparent'} strokeWidth={2} />
         </Animated.View>
         {!!badge && (
-          <Animated.View
-            key={badge}
-            entering={ZoomIn.springify().damping(10)}
-            className="absolute -right-0.5 -top-0.5 h-5 min-w-5 items-center justify-center rounded-full border-2 border-white bg-rose-500 px-1"
-          >
+          <View className="absolute -right-0.5 -top-0.5 h-5 min-w-5 items-center justify-center rounded-full border-2 border-white bg-rose-500 px-1">
             <Text className="font-body-semibold text-[10px] text-white">{badge}</Text>
-          </Animated.View>
+          </View>
         )}
       </View>
     </PressableScale>

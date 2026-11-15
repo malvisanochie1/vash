@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
+import { View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { cn } from '@/lib/cn';
 
@@ -10,5 +10,9 @@ export function Skeleton({ className, style }: { className?: string; style?: Sty
     opacity.value = withRepeat(withTiming(1, { duration: 800 }), -1, true);
   }, [opacity]);
   const pulse = useAnimatedStyle(() => ({ opacity: opacity.value }));
-  return <Animated.View className={cn('rounded-3xl bg-blush-200', className)} style={[style, pulse]} />;
+  return (
+    <Animated.View style={[style, pulse]}>
+      <View className={cn('h-full w-full rounded-3xl bg-blush-200', className)} />
+    </Animated.View>
+  );
 }

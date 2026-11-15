@@ -63,7 +63,7 @@ export function Button({
       style={variant === 'primary' && !disabled ? shadow.button : undefined}
     >
       {variant === 'primary' ? (
-        <LinearGradient colors={gradients.primary} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} className="rounded-full">
+        <LinearGradient colors={gradients.primary} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ borderRadius: 999 }}>
           {content}
         </LinearGradient>
       ) : (

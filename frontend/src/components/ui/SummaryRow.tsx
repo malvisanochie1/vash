@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { Appear } from '@/components/motion/Appear';
 import { cn } from '@/lib/cn';
 import { Text } from './Text';
 
@@ -14,7 +14,7 @@ export function SummaryRow({ label, value, emphasis, tone = 'default' }: Props) 
   return (
     <View className={cn('flex-row items-center justify-between', emphasis && 'mt-1 border-t border-line pt-3')}>
       <Text className={cn(emphasis ? 'font-body-semibold text-base' : 'text-muted')}>{label}</Text>
-      <Animated.View key={value} entering={FadeIn.duration(250)}>
+      <Appear key={value} preset="fade" duration={250}>
         <Text
           className={cn(
             emphasis ? 'font-body-semibold text-lg text-ink' : 'font-body-medium',
@@ -23,7 +23,7 @@ export function SummaryRow({ label, value, emphasis, tone = 'default' }: Props) 
         >
           {value}
         </Text>
-      </Animated.View>
+      </Appear>
     </View>
   );
 }

@@ -4,14 +4,14 @@ import { palette } from '@/theme';
 
 function Dot({ index, width, scrollX }: { index: number; width: number; scrollX: SharedValue<number> }) {
   const style = useAnimatedStyle(() => {
-    const input = [(index - 1) * width, index * width, (index + 1) * width];
-    const active = interpolate(scrollX.value, input, [0, 1, 0], Extrapolation.CLAMP);
+    const range = [(index - 1) * width, index * width, (index + 1) * width];
+    const active = interpolate(scrollX.value, range, [0, 1, 0], Extrapolation.CLAMP);
     return {
-      width: 8 + active * 22,
+      width: 8 + active * 20,
       backgroundColor: interpolateColor(active, [0, 1], [palette.blush[300], palette.rose[500]]),
     };
   });
-  return <Animated.View className="h-2 rounded-full" style={style} />;
+  return <Animated.View style={[{ height: 8, borderRadius: 4 }, style]} />;
 }
 
 export function PagerDots({ count, width, scrollX }: { count: number; width: number; scrollX: SharedValue<number> }) {

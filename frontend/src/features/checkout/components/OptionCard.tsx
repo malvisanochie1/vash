@@ -37,7 +37,7 @@ export function OptionCard({ icon: Icon, title, subtitle, trailing, selected, on
       accessibilityState={{ selected, disabled }}
       style={disabled ? { opacity: 0.5 } : undefined}
     >
-      <Animated.View className="flex-row items-center gap-3 rounded-3xl border-[1.5px] p-3.5" style={card}>
+      <Animated.View style={[{ flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: 24, borderWidth: 1.5, padding: 14 }, card]}>
         <View className="h-11 w-11 items-center justify-center rounded-2xl bg-blush-200">
           <Icon size={20} color={palette.rose[600]} />
         </View>
@@ -46,8 +46,8 @@ export function OptionCard({ icon: Icon, title, subtitle, trailing, selected, on
           <Text variant="caption">{subtitle}</Text>
         </View>
         {trailing && <Text className="font-body-semibold text-[13px]">{trailing}</Text>}
-        <Animated.View className="h-[22px] w-[22px] items-center justify-center rounded-full border-2" style={ring}>
-          <Animated.View className="h-2.5 w-2.5 rounded-full bg-rose-500" style={fill} />
+        <Animated.View style={[{ width: 22, height: 22, borderRadius: 11, borderWidth: 2, alignItems: 'center', justifyContent: 'center' }, ring]}>
+          <Animated.View style={[{ width: 10, height: 10, borderRadius: 5, backgroundColor: palette.rose[500] }, fill]} />
         </Animated.View>
       </Animated.View>
     </PressableScale>

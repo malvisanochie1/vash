@@ -18,7 +18,8 @@ export function SocialButtons() {
         {providers.map((p) => (
           <PressableScale
             key={p.id}
-            className="h-12 flex-1 flex-row items-center justify-center gap-2 rounded-full border border-line bg-white"
+            wrapperStyle={{ flex: 1 }}
+            className="h-12 flex-row items-center justify-center gap-2 rounded-full border border-line bg-white"
             onPress={() => toast.show({ title: `${p.label} sign-in is coming soon`, tone: 'info' })}
           >
             <Text className="font-body-semibold text-[15px]">{p.glyph}</Text>

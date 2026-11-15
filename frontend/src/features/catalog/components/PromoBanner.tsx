@@ -51,13 +51,13 @@ export function PromoBanner() {
                 <ArrowRight size={14} color={palette.rose[600]} />
               </View>
             </View>
-            <Animated.View style={floatStyle} className="w-[46%] items-center justify-center">
+            <Animated.View style={[{ width: '46%', alignItems: 'center', justifyContent: 'center' }, floatStyle]}>
               <View className="absolute h-36 w-36 rounded-full bg-white/20" />
               <ProductArt art={heroArt} size={170} backdrop="none" />
             </Animated.View>
           </View>
         </LinearGradient>
-        <Animated.View pointerEvents="none" className="absolute -top-10 h-[300px] w-16 bg-white/15" style={shineStyle} />
+        <Animated.View pointerEvents="none" style={[{ position: 'absolute', top: -40, height: 300, width: 64, backgroundColor: 'rgba(255,255,255,0.15)' }, shineStyle]} />
       </View>
     </PressableScale>
   );

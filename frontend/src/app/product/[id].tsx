@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { ChevronLeft, ShoppingBag } from 'lucide-react-native';
 import { useRef, useState, type ComponentRef } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -87,10 +87,10 @@ export default function ProductScreen() {
 
   const topBar = (
     <View className="absolute inset-x-0 top-0 z-10" style={{ paddingTop: insets.top }}>
-      <Animated.View className="absolute inset-0 border-b border-line bg-white/95" style={headerFill} />
+      <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(255,255,255,0.96)', borderBottomWidth: 1, borderColor: palette.line }, headerFill]} />
       <Container className="flex-row items-center justify-between py-2">
         <IconButton icon={ChevronLeft} accessibilityLabel="Go back" onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)'))} />
-        <Animated.View style={headerFill} className="flex-1 px-3">
+        <Animated.View style={[{ flex: 1, paddingHorizontal: 12 }, headerFill]}>
           <Text numberOfLines={1} className="text-center font-body-semibold">
             {product.name}
           </Text>

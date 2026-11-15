@@ -1,8 +1,9 @@
 import type { LucideIcon } from 'lucide-react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
-import { useState, type ComponentRef, type Ref } from 'react';
-import { Pressable, TextInput, View, type TextInputProps } from 'react-native';
-import Animated, { FadeInDown, interpolateColor, useAnimatedStyle, useDerivedValue, withTiming } from 'react-native-reanimated';
+import { useEffect, useState, type ComponentRef, type Ref } from 'react';
+import { Pressable, StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
+import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Appear } from '@/components/motion/Appear';
 import { palette } from '@/theme';
 import { Text } from './Text';
 
@@ -19,28 +20,32 @@ interface Props extends TextInputProps {
 export function Input({ ref, icon: Icon, error, secure, onFocus, onBlur, ...rest }: Props) {
   const [focused, setFocused] = useState(false);
   const [hidden, setHidden] = useState(true);
-  const progress = useDerivedValue(() => withTiming(focused ? 1 : 0, { duration: 220 }));
+  const focus = useSharedValue(0);
 
-  const ringStyle = useAnimatedStyle(() => ({
-    borderColor: error
-      ? palette.rose[600]
-      : interpolateColor(progress.value, [0, 1], [palette.line, palette.rose[400]]),
-    shadowOpacity: progress.value * 0.18,
+  useEffect(() => {
+    focus.value = withTiming(focused ? 1 : 0, { duration: 200 });
+  }, [focus, focused]);
+
+  const ring = useAnimatedStyle(() => ({
+    borderColor: error ? palette.rose[500] : interpolateColor(focus.value, [0, 1], [palette.line, palette.rose[400]]),
+    borderWidth: 1.5 + focus.value * 0.5,
   }));
 
   return (
     <View>
-      <Animated.View
-        className="h-14 flex-row items-center gap-3 rounded-2xl border-[1.5px] bg-white px-4"
-        style={[{ shadowColor: palette.rose[500], shadowRadius: 12, shadowOffset: { width: 0, height: 4 } }, ringStyle]}
-      >
-        {Icon && <Icon size={18} color={focused ? palette.rose[500] : palette.muted} />}
+      <View className="h-14 w-full flex-row items-center rounded-2xl bg-white px-4">
+        <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.ring, ring]} />
+        {Icon && (
+          <View className="shrink-0">
+            <Icon size={18} color={focused ? palette.rose[500] : palette.muted} />
+          </View>
+        )}
         <TextInput
           ref={ref}
           placeholderTextColor={palette.muted}
           secureTextEntry={secure && hidden}
-          className="h-full flex-1 font-body text-[14px] text-ink"
-          style={{ outlineStyle: 'none' } as object}
+          className="ml-3 h-full flex-1 font-body text-[15px] text-ink"
+          style={styles.input}
           onFocus={(e) => {
             setFocused(true);
             onFocus?.(e);
@@ -52,16 +57,22 @@ export function Input({ ref, icon: Icon, error, secure, onFocus, onBlur, ...rest
           {...rest}
         />
         {secure && (
-          <Pressable onPress={() => setHidden((h) => !h)} hitSlop={12} accessibilityLabel="Toggle password visibility">
+          <Pressable onPress={() => setHidden((h) => !h)} hitSlop={12} accessibilityLabel="Toggle password visibility" className="ml-2 shrink-0">
             {hidden ? <Eye size={18} color={palette.muted} /> : <EyeOff size={18} color={palette.muted} />}
           </Pressable>
         )}
-      </Animated.View>
+      </View>
       {error && (
-        <Animated.View entering={FadeInDown.duration(200)}>
+        <Appear key={error} preset="down" distance={6} duration={240}>
           <Text className="ml-2 mt-1.5 text-xs text-rose-600">{error}</Text>
-        </Animated.View>
+        </Appear>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  ring: { borderRadius: 16 },
+  // Web-only: hide the browser focus outline; the animated ring replaces it.
+  input: { outlineStyle: 'none', paddingVertical: 0, minWidth: 0 } as object,
+});

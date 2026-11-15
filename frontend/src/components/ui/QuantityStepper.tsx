@@ -1,6 +1,6 @@
 import { Minus, Plus } from 'lucide-react-native';
 import { View } from 'react-native';
-import Animated, { FadeInDown, FadeOutUp } from 'react-native-reanimated';
+import { Appear } from '@/components/motion/Appear';
 import { cn } from '@/lib/cn';
 import { palette } from '@/theme';
 import { PressableScale } from './PressableScale';
@@ -24,8 +24,8 @@ export function QuantityStepper({ value, onChange, min = 1, max = 20, compact }:
         onPress={() => onChange(value + delta)}
         accessibilityLabel={label}
         scaleTo={0.85}
-        className={cn('items-center justify-center rounded-full bg-white', disabled && 'opacity-40')}
-        style={{ width: size, height: size }}
+        className="items-center justify-center rounded-full bg-white"
+        style={{ width: size, height: size, opacity: disabled ? 0.4 : 1 }}
       >
         <Icon size={compact ? 13 : 16} color={palette.ink} strokeWidth={2.4} />
       </PressableScale>
@@ -36,9 +36,9 @@ export function QuantityStepper({ value, onChange, min = 1, max = 20, compact }:
     <View className={cn('flex-row items-center rounded-full bg-blush-100', compact ? 'gap-1 p-1' : 'gap-2 p-1.5')}>
       <Step delta={-1} icon={Minus} label="Decrease quantity" />
       <View className="min-w-6 items-center overflow-hidden">
-        <Animated.View key={value} entering={FadeInDown.duration(180)} exiting={FadeOutUp.duration(120)}>
+        <Appear key={value} preset="up" distance={8} duration={200}>
           <Text className={cn('font-body-semibold text-ink', compact ? 'text-xs' : 'text-[15px]')}>{value}</Text>
-        </Animated.View>
+        </Appear>
       </View>
       <Step delta={1} icon={Plus} label="Increase quantity" />
     </View>
