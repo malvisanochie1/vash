@@ -24,7 +24,8 @@ export function PaymentInstructions({ instruction }: { instruction: PaymentInstr
     <View className="rounded-3xl border border-dashed border-rose-300 bg-blush-100 p-4">
       <Text variant="overline">Complete your transfer</Text>
       <Text className="mt-1 text-muted">
-        Send <Text className="font-body-semibold text-ink">{formatNaira(instruction.amount)}</Text> and use the reference below.
+        Send exactly <Text className="font-body-semibold text-ink">{formatNaira(instruction.amount)}</Text> to the account below and
+        put the reference in the narration. Your order is confirmed once the money arrives.
       </Text>
       <View className="mt-3 gap-2">
         {rows.map(([label, value]) => (

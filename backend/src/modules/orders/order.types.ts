@@ -5,6 +5,7 @@ import type { Address } from '../users/user.types.js';
 export const DELIVERY_OPTIONS = {
   express: { id: 'express', label: 'Express', eta: 'Today, 3 – 6 PM', fee: 5000 },
   standard: { id: 'standard', label: 'Standard', eta: '2 – 3 working days', fee: 2500 },
+  pickup: { id: 'pickup', label: 'Store pickup', eta: 'Ready in 24 hours', fee: 0 },
 } as const;
 export type DeliveryOptionId = keyof typeof DELIVERY_OPTIONS;
 

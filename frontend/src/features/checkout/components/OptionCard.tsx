@@ -11,10 +11,11 @@ interface Props {
   trailing?: string;
   selected: boolean;
   onPress: () => void;
+  disabled?: boolean;
 }
 
 /** Radio card: border, tint and the radio dot all animate on selection. */
-export function OptionCard({ icon: Icon, title, subtitle, trailing, selected, onPress }: Props) {
+export function OptionCard({ icon: Icon, title, subtitle, trailing, selected, onPress, disabled }: Props) {
   const p = useDerivedValue(() => withTiming(selected ? 1 : 0, { duration: 220 }));
   const dot = useDerivedValue(() => withSpring(selected ? 1 : 0, { damping: 12, stiffness: 260 }));
 
@@ -28,7 +29,14 @@ export function OptionCard({ icon: Icon, title, subtitle, trailing, selected, on
   const fill = useAnimatedStyle(() => ({ transform: [{ scale: dot.value }] }));
 
   return (
-    <PressableScale scaleTo={0.98} onPress={onPress} accessibilityRole="radio" accessibilityState={{ selected }}>
+    <PressableScale
+      scaleTo={0.98}
+      onPress={onPress}
+      disabled={disabled}
+      accessibilityRole="radio"
+      accessibilityState={{ selected, disabled }}
+      style={disabled ? { opacity: 0.5 } : undefined}
+    >
       <Animated.View className="flex-row items-center gap-3 rounded-3xl border-[1.5px] p-3.5" style={card}>
         <View className="h-11 w-11 items-center justify-center rounded-2xl bg-blush-200">
           <Icon size={20} color={palette.rose[600]} />

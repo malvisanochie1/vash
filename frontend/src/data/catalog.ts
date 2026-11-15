@@ -1120,6 +1120,92 @@ export const productSeed: Product[] = [
     "featured": false
   },
   {
+    "id": "p-test-sachet",
+    "slug": "test-sachet",
+    "name": "Leave-In Trial Sachet",
+    "nickname": "Try me first",
+    "category": "moisture",
+    "tagline": "Single-use trial sachet",
+    "description": "A single-use sachet of our Daily Leave-In Cream — perfect for trying the formula before buying the full jar.",
+    "benefits": [
+      "Try before you buy",
+      "Single use",
+      "Travel friendly"
+    ],
+    "ingredients": [
+      "Shea butter",
+      "Hibiscus oil"
+    ],
+    "howToUse": "Smooth through damp hair after washing. Do not rinse.",
+    "images": [],
+    "art": {
+      "shape": "tube",
+      "body": "#F7B8D2",
+      "cap": "#E0217A",
+      "label": "#FFFFFF",
+      "text": "SACHET"
+    },
+    "optionName": "Pack",
+    "badges": [
+      "Test item"
+    ],
+    "rating": 4.5,
+    "reviewCount": 12,
+    "variants": [
+      {
+        "id": "v-test-sachet",
+        "label": "Sachet",
+        "price": 15,
+        "inStock": true
+      }
+    ],
+    "isNew": false,
+    "featured": true
+  },
+  {
+    "id": "p-test-sample",
+    "slug": "test-sample",
+    "name": "Growth Oil Sample",
+    "nickname": "A drop of glow",
+    "category": "moisture",
+    "tagline": "5ml sample vial",
+    "description": "A 5ml sample of our Rosemary & Chebe Growth Oil.",
+    "benefits": [
+      "Sample size",
+      "Try the scent",
+      "Pocket friendly"
+    ],
+    "ingredients": [
+      "Rosemary oil",
+      "Chebe powder"
+    ],
+    "howToUse": "Apply a few drops to the scalp and massage.",
+    "images": [],
+    "art": {
+      "shape": "dropper",
+      "body": "#E8B04B",
+      "cap": "#6B3E2E",
+      "label": "#FFFFFF",
+      "text": "SAMPLE"
+    },
+    "optionName": "Size",
+    "badges": [
+      "Test item"
+    ],
+    "rating": 4.5,
+    "reviewCount": 9,
+    "variants": [
+      {
+        "id": "v-test-sample",
+        "label": "5ml",
+        "price": 20,
+        "inStock": true
+      }
+    ],
+    "isNew": false,
+    "featured": true
+  },
+  {
     "id": "p-wash-day-kit",
     "slug": "wash-day-kit",
     "name": "Wash Day Kit",
@@ -1223,6 +1309,7 @@ export const productSeed: Product[] = [
 export const deliveryOptions: DeliveryOption[] = [
   { id: 'express', label: 'Express', eta: 'Today, 3 – 6 PM', fee: 5000 },
   { id: 'standard', label: 'Standard', eta: '2 – 3 working days', fee: 2500 },
+  { id: 'pickup', label: 'Store pickup', eta: 'Ready in 24 hours', fee: 0 },
 ];
 
 export const promotions = [

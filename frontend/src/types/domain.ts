@@ -80,7 +80,7 @@ export interface AuthSession {
   user: User;
 }
 
-export type DeliveryOptionId = 'express' | 'standard';
+export type DeliveryOptionId = 'express' | 'standard' | 'pickup';
 
 export interface DeliveryOption {
   id: DeliveryOptionId;

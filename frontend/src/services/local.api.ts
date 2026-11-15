@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { categorySeed, deliveryOptions, demoAccount, productSeed, promotions } from '@/data/catalog';
 import { ApiError } from '@/lib/http';
-import { brand } from '@/config/brand';
+import { cardPaymentsEnabled, payoutAccount } from '@/config/payments';
 import type { Order, OrderStatus, Product } from '@/types/domain';
 import type { Api } from './api.types';
 
@@ -106,6 +106,9 @@ export const localApi: Api = {
     async create(input) {
       await latency(1400);
       if (!input.items.length) throw new ApiError('Your bag is empty', 400);
+      if (input.paymentMethod === 'card' && !cardPaymentsEnabled) {
+        throw new ApiError('Card payments are not available yet. Please choose bank transfer.', 400);
+      }
 
       const lines = input.items.map(({ productId, variantId, quantity }) => {
         const product = findProduct(productId);
@@ -134,7 +137,7 @@ export const localApi: Api = {
 
       const instruction: Order['payment']['instruction'] =
         input.paymentMethod === 'bank_transfer'
-          ? { type: 'bank_transfer', bankName: 'To be confirmed', accountName: brand.legalName, accountNumber: '0000000000', reference, amount: total }
+          ? { type: 'bank_transfer', ...payoutAccount, reference, amount: total }
           : input.paymentMethod === 'card'
             ? { type: 'card', reference, sandbox: true }
             : { type: 'pay_on_delivery', amount: total };

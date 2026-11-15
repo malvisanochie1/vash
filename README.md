@@ -67,7 +67,7 @@ Modules are layered as **routes → service → repository**. Repositories curre
 | `POST /api/v1/orders` · `GET /orders` · `GET /orders/:id` | Orders. The server prices every order. |
 | `PATCH /api/v1/orders/:id/status` | Admin: move an order along its delivery timeline |
 
-Payments use a provider registry with **bank transfer**, **card (Paystack)** and **pay on delivery**. The receiving bank account comes from `PAYOUT_*` in `.env`.
+Payments use a provider registry with **bank transfer**, **card (Paystack)** and **pay on delivery**. Bank transfers go straight into the account set in `PAYOUT_*` (`.env`) and, for the app's demo mode, `frontend/src/config/payments.ts`. Card payments stay switched off until a gateway key is added, so no customer can be charged by mistake.
 
 ```bash
 cd backend
@@ -79,6 +79,6 @@ npm test
 
 ## Still to configure
 
-- Receiving bank account details (`PAYOUT_*`) and the Paystack key for card payments.
+- A card gateway (OPay Business or Paystack) to switch on card payments with automatic confirmation.
 - Final product prices. The current catalogue prices are placeholders.
 - Hosting for the backend, then set `EXPO_PUBLIC_API_URL` as a GitHub Actions variable.

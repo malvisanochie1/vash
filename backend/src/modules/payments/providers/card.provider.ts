@@ -4,12 +4,14 @@ import type { PaymentProvider } from '../payment.types.js';
 
 const PAYSTACK_INIT_URL = 'https://api.paystack.co/transaction/initialize';
 
-/** Card payments via Paystack. Without a secret key it runs in sandbox mode. */
+/** Card payments via Paystack. Disabled (rejects) until a secret key is configured. */
 export const cardProvider: PaymentProvider = {
   method: 'card',
   initialStatus: 'awaiting_card',
   async initiate({ reference, amount, email }) {
-    if (!env.PAYSTACK_SECRET_KEY) return { type: 'card', reference, sandbox: true };
+    if (!env.PAYSTACK_SECRET_KEY) {
+      throw new AppError(400, 'Card payments are not available yet. Please choose bank transfer.', 'PAYMENT_UNAVAILABLE');
+    }
 
     const response = await fetch(PAYSTACK_INIT_URL, {
       method: 'POST',

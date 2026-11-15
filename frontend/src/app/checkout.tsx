@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Clock, Lock, Truck } from 'lucide-react-native';
+import { Clock, Lock, Store, Truck } from 'lucide-react-native';
 import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -84,10 +84,10 @@ export default function Checkout() {
             {deliveryOptions.map((option) => (
               <OptionCard
                 key={option.id}
-                icon={option.id === 'express' ? Truck : Clock}
+                icon={option.id === 'express' ? Truck : option.id === 'pickup' ? Store : Clock}
                 title={option.label}
                 subtitle={option.eta}
-                trailing={formatNaira(option.fee)}
+                trailing={option.fee ? formatNaira(option.fee) : 'Free'}
                 selected={deliveryId === option.id}
                 onPress={() => setDeliveryId(option.id)}
               />
@@ -103,6 +103,7 @@ export default function Checkout() {
                 title={method.title}
                 subtitle={method.subtitle}
                 selected={payment === method.id}
+                disabled={!method.available}
                 onPress={() => setPayment(method.id)}
               />
             ))}
@@ -111,7 +112,7 @@ export default function Checkout() {
           <Reveal index={3} className="gap-2.5 rounded-[28px] bg-white p-5" style={shadow.card}>
             <SummaryRow label={`Subtotal (${lines.length} item${lines.length === 1 ? '' : 's'})`} value={formatNaira(subtotal)} />
             {discount > 0 && <SummaryRow label={`Promo ${promo?.code}`} value={`-${formatNaira(discount)}`} tone="positive" />}
-            <SummaryRow label={`Delivery (${delivery.label})`} value={formatNaira(delivery.fee)} />
+            <SummaryRow label={`Delivery (${delivery.label})`} value={delivery.fee ? formatNaira(delivery.fee) : 'Free'} />
             <SummaryRow label="Total" value={formatNaira(total)} emphasis />
           </Reveal>
         </Container>
@@ -120,7 +121,7 @@ export default function Checkout() {
       <View className="absolute inset-x-0 bottom-0 bg-blush-50/95 pt-3" style={{ paddingBottom: Math.max(insets.bottom, 14) }}>
         <Container narrow>
           <Button
-            title={createOrder.isPending ? 'Processing…' : payment ? `Pay ${formatNaira(total)}` : 'Choose a payment method'}
+            title={createOrder.isPending ? 'Placing order…' : payment ? `Place order · ${formatNaira(total)}` : 'Choose a payment method'}
             icon={Lock}
             loading={createOrder.isPending}
             disabled={!payment || !addressReady || !lines.length}
