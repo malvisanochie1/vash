@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
-import { useEffect, useState, type ComponentRef, type Ref } from 'react';
+import { useEffect, useState, type ComponentRef, type ReactNode, type Ref } from 'react';
 import { Pressable, StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Appear } from '@/components/motion/Appear';
@@ -14,10 +14,12 @@ interface Props extends TextInputProps {
   icon?: LucideIcon;
   error?: string;
   secure?: boolean;
+  /** Extra control shown at the end of the field (e.g. fingerprint sign-in). */
+  accessory?: ReactNode;
 }
 
 /** Text field with an animated focus ring and inline error. */
-export function Input({ ref, icon: Icon, error, secure, onFocus, onBlur, ...rest }: Props) {
+export function Input({ ref, icon: Icon, error, secure, accessory, onFocus, onBlur, ...rest }: Props) {
   const [focused, setFocused] = useState(false);
   const [hidden, setHidden] = useState(true);
   const focus = useSharedValue(0);
@@ -56,6 +58,7 @@ export function Input({ ref, icon: Icon, error, secure, onFocus, onBlur, ...rest
           }}
           {...rest}
         />
+        {accessory && <View className="ml-3 shrink-0">{accessory}</View>}
         {secure && (
           <Pressable onPress={() => setHidden((h) => !h)} hitSlop={12} accessibilityLabel="Toggle password visibility" className="ml-2 shrink-0">
             {hidden ? <Eye size={18} color={palette.muted} /> : <EyeOff size={18} color={palette.muted} />}

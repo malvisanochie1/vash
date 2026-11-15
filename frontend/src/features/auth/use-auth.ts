@@ -3,13 +3,23 @@ import { router } from 'expo-router';
 import { api } from '@/services';
 import { useAuthStore } from './auth.store';
 
-export const useLogin = () => {
+interface Credentials {
+  email: string;
+  password: string;
+}
+
+/**
+ * Signs in. By default it goes straight to the shop; pass `onSignedIn` to
+ * show something first (e.g. offering fingerprint sign-in).
+ */
+export const useLogin = (onSignedIn?: (credentials: Credentials) => void) => {
   const setSession = useAuthStore((s) => s.setSession);
   return useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) => api.auth.login(email, password),
-    onSuccess: (session) => {
+    mutationFn: ({ email, password }: Credentials) => api.auth.login(email, password),
+    onSuccess: (session, credentials) => {
       setSession(session);
-      router.replace('/(tabs)');
+      if (onSignedIn) onSignedIn(credentials);
+      else router.replace('/(tabs)');
     },
   });
 };

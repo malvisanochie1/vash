@@ -14,12 +14,13 @@ interface AuthState {
   locked: boolean;
   /** When the app last went to the background (or was closed). */
   lastActiveAt: number;
-  biometricEnabled: boolean;
+  /** Account email that has fingerprint sign-in switched on (credentials live in the Keystore). */
+  fingerprintEmail: string | null;
   setSession(session: AuthSession): void;
   markBackgrounded(): void;
   lockIfIdle(): boolean;
   unlock(): void;
-  setBiometricEnabled(enabled: boolean): void;
+  setFingerprintEmail(email: string | null): void;
   signOut(): void;
 }
 
@@ -30,7 +31,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       locked: false,
       lastActiveAt: 0,
-      biometricEnabled: true,
+      fingerprintEmail: null,
       setSession: ({ token, user }) => set({ token, user, locked: false, lastActiveAt: Date.now() }),
       markBackgrounded: () => set({ lastActiveAt: Date.now() }),
       lockIfIdle: () => {
@@ -43,7 +44,7 @@ export const useAuthStore = create<AuthState>()(
         return false;
       },
       unlock: () => set({ locked: false, lastActiveAt: Date.now() }),
-      setBiometricEnabled: (biometricEnabled) => set({ biometricEnabled }),
+      setFingerprintEmail: (fingerprintEmail) => set({ fingerprintEmail }),
       signOut: () => set({ token: null, user: null, locked: false }),
     }),
     { name: 'velora.auth', storage: persistStorage },

@@ -42,7 +42,7 @@ function MiniHeart({ index, total }: { index: number; total: number }) {
 function LovePop({ pop, onDone }: { pop: Pop; onDone: (id: number) => void }) {
   const t = useSharedValue(0);
   useEffect(() => {
-    t.value = withTiming(1, { duration: 1500, easing: Easing.linear }, (done) => {
+    t.value = withTiming(1, { duration: 1800, easing: Easing.linear }, (done) => {
       if (done) runOnJS(onDone)(pop.id);
     });
   }, [onDone, pop.id, t]);
@@ -86,7 +86,8 @@ export function LovePopProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider value={value}>
       {children}
-      <View pointerEvents="none" style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, zIndex: 120 }}>
+      {/* Elevation keeps this above the native screen container on Android. */}
+      <View pointerEvents="none" style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, zIndex: 120, elevation: 50 }}>
         {pops.map((p) => (
           <LovePop key={p.id} pop={p} onDone={remove} />
         ))}

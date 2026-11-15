@@ -1,6 +1,6 @@
 import { Heart } from 'lucide-react-native';
 import { useRef, type ComponentRef } from 'react';
-import { Pressable, View } from 'react-native';
+import { Dimensions, Pressable, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { palette } from '@/theme';
 import { useFavoritesStore, useIsFavorite } from '../favorites.store';
@@ -19,7 +19,13 @@ export function HeartButton({ productId, size = 34 }: { productId: string; size?
 
   const press = () => {
     scale.value = withSequence(withTiming(0.75, { duration: 120, easing: EASE }), withTiming(1, { duration: 380, easing: EASE }));
-    if (!active) ref.current?.measureInWindow((x, y, w, h) => pop({ x: x + w / 2, y: y + h / 2 }));
+    if (!active) {
+      const { width, height } = Dimensions.get('window');
+      const centre = { x: width / 2, y: height * 0.45 };
+      // Pop from the heart itself; fall back to the middle of the screen if it can't be measured.
+      if (!ref.current) pop(centre);
+      else ref.current.measureInWindow((x, y, w, h) => pop(w ? { x: x + w / 2, y: y + h / 2 } : centre));
+    }
     toggle(productId);
   };
 

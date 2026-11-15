@@ -1,32 +1,59 @@
-import { Link } from 'expo-router';
-import { Lock, Mail } from 'lucide-react-native';
+import { Link, router } from 'expo-router';
+import { Fingerprint, Lock, Mail } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Reveal } from '@/components/motion/Reveal';
-import { Button, Input, Text, toast, type InputRef } from '@/components/ui';
-import { AuthLayout } from '@/features/auth/components/AuthLayout';
-import { SocialButtons } from '@/features/auth/components/SocialButtons';
-import { useLogin } from '@/features/auth/use-auth';
-import { validateLogin, type FieldErrors } from '@/features/auth/validation';
+import { Button, Input, PressableScale, Text, toast, type InputRef } from '@/components/ui';
 import { env } from '@/config/env';
 import { demoAccount } from '@/data/catalog';
+import { useAuthStore } from '@/features/auth/auth.store';
+import { AuthLayout } from '@/features/auth/components/AuthLayout';
+import { FingerprintSetupSheet } from '@/features/auth/components/FingerprintSetupSheet';
+import { SocialButtons } from '@/features/auth/components/SocialButtons';
+import { readFingerprintLogin } from '@/features/auth/fingerprint-login';
+import { useLogin } from '@/features/auth/use-auth';
+import { useBiometricAvailability } from '@/features/auth/use-biometrics';
+import { validateLogin, type FieldErrors } from '@/features/auth/validation';
+import { palette } from '@/theme';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<FieldErrors<'email' | 'password'>>({});
+  const [hint, setHint] = useState<string>();
+  const [offer, setOffer] = useState<{ email: string; password: string } | null>(null);
   const passwordRef = useRef<InputRef>(null);
-  const login = useLogin();
+
+  const fingerprintReady = useBiometricAvailability();
+  const fingerprintEmail = useAuthStore((s) => s.fingerprintEmail);
+
+  // After a password sign-in, offer fingerprint sign-in once for this account.
+  const login = useLogin((credentials) => {
+    if (fingerprintReady && fingerprintEmail !== credentials.email) setOffer(credentials);
+    else router.replace('/(tabs)');
+  });
 
   const submit = () => {
     const found = validateLogin(email, password);
     setErrors(found);
     if (Object.keys(found).length) return;
-    login.mutate({ email: email.trim(), password });
+    login.mutate({ email: email.trim().toLowerCase(), password });
+  };
+
+  const signInWithFingerprint = async () => {
+    setHint(undefined);
+    if (!fingerprintEmail) {
+      setHint('Sign in with your password once, then turn on fingerprint sign-in.');
+      return;
+    }
+    const credentials = await readFingerprintLogin();
+    if (!credentials) return;
+    setEmail(credentials.email);
+    login.mutate(credentials);
   };
 
   return (
-    <AuthLayout title="Welcome back, gorgeous" emoji="💕" subtitle="Sign in to continue your wash-day glow.">
+    <AuthLayout title="Welcome back, gorgeous" emoji="💕" subtitle="Sign in to continue your hair care journey.">
       <View className="gap-4">
         <Reveal index={1}>
           <Input
@@ -54,7 +81,15 @@ export default function Login() {
             onChangeText={setPassword}
             onSubmitEditing={submit}
             error={errors.password ?? (login.error ? login.error.message : undefined)}
+            accessory={
+              fingerprintReady ? (
+                <PressableScale onPress={signInWithFingerprint} accessibilityLabel="Sign in with fingerprint" hitSlop={10}>
+                  <Fingerprint size={20} color={fingerprintEmail ? palette.rose[500] : palette.muted} />
+                </PressableScale>
+              ) : undefined
+            }
           />
+          {hint && <Text className="ml-2 mt-1.5 text-xs text-muted">{hint}</Text>}
         </Reveal>
         <Reveal index={3} className="items-end">
           <Pressable onPress={() => toast.show({ title: 'Password reset link sent', message: 'Check your inbox', tone: 'info' })}>
@@ -90,6 +125,19 @@ export default function Login() {
           <Text className="font-body-semibold text-rose-600">Create an account</Text>
         </Link>
       </Reveal>
+
+      {offer && (
+        <FingerprintSetupSheet
+          visible
+          email={offer.email}
+          password={offer.password}
+          onDone={(enabled) => {
+            setOffer(null);
+            if (enabled) toast.show({ title: 'Fingerprint sign-in is on', message: 'Use the fingerprint icon next time' });
+            router.replace('/(tabs)');
+          }}
+        />
+      )}
     </AuthLayout>
   );
 }

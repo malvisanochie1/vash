@@ -39,12 +39,12 @@ export function PressableScale({
         className={className}
         style={style}
         onPressIn={(e) => {
-          scale.value = withTiming(scaleTo, { duration: 160, easing: EASE_OUT });
+          scale.value = withTiming(scaleTo, { duration: 200, easing: EASE_OUT });
           onPressIn?.(e);
         }}
         onPressOut={(e) => {
           // Soft release: eases back out, no bounce.
-          scale.value = withTiming(1, { duration: 360, easing: EASE_OUT });
+          scale.value = withTiming(1, { duration: 440, easing: EASE_OUT });
           onPressOut?.(e);
         }}
         onPress={onPress}

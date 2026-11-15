@@ -1,28 +1,11 @@
-import * as LocalAuthentication from 'expo-local-authentication';
 import { useEffect, useState } from 'react';
-import { Platform } from 'react-native';
+import { fingerprintSupported } from './fingerprint-login';
 
-/** Whether this device can unlock with a fingerprint (or face) right now. */
+/** Whether this phone has a fingerprint (or face) registered and ready to use. */
 export function useBiometricAvailability() {
   const [available, setAvailable] = useState(false);
   useEffect(() => {
-    if (Platform.OS === 'web') return;
-    void (async () => {
-      const [hardware, enrolled] = await Promise.all([
-        LocalAuthentication.hasHardwareAsync(),
-        LocalAuthentication.isEnrolledAsync(),
-      ]);
-      setAvailable(hardware && enrolled);
-    })();
+    void fingerprintSupported().then(setAvailable);
   }, []);
   return available;
-}
-
-export async function authenticateWithBiometrics(): Promise<boolean> {
-  const result = await LocalAuthentication.authenticateAsync({
-    promptMessage: 'Unlock Vash',
-    cancelLabel: 'Use password',
-    disableDeviceFallback: true,
-  });
-  return result.success;
 }

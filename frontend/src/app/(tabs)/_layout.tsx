@@ -3,7 +3,6 @@ import type { BottomTabNavigationOptions } from 'expo-router/tabs';
 import { Dimensions, Easing } from 'react-native';
 import { TabBar } from '@/components/layout/TabBar';
 import { useAuthStore } from '@/features/auth/auth.store';
-import { FloatingBag } from '@/features/cart/fly/FloatingBag';
 
 /** Tabs slide horizontally, in the direction of the tab you pick. */
 const slideBetweenTabs: NonNullable<BottomTabNavigationOptions['sceneStyleInterpolator']> = ({ current }) => {
@@ -21,7 +20,7 @@ const slideBetweenTabs: NonNullable<BottomTabNavigationOptions['sceneStyleInterp
 
 const slideSpec = {
   animation: 'timing' as const,
-  config: { duration: 460, easing: Easing.bezier(0.65, 0, 0.35, 1) },
+  config: { duration: 560, easing: Easing.bezier(0.65, 0, 0.35, 1) },
 } satisfies BottomTabNavigationOptions['transitionSpec'];
 
 export default function TabsLayout() {
@@ -45,7 +44,6 @@ export default function TabsLayout() {
         <Tabs.Screen name="bag" />
         <Tabs.Screen name="profile" />
       </Tabs>
-      <FloatingBag />
     </>
   );
 }

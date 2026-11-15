@@ -18,7 +18,7 @@ export const motion = {
   /** Calm settle used for drags and gestures. */
   spring: { damping: 26, stiffness: 140, mass: 1 },
   duration: { fast: 200, base: 360, slow: 560 },
-  stagger: 80,
+  stagger: 90,
 } as const;
 
 export const shadow = {

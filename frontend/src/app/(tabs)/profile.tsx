@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import { ChevronRight, Fingerprint, Heart, HelpCircle, LogOut, MapPin, Package } from 'lucide-react-native';
+import { useState } from 'react';
 import { Switch, View } from 'react-native';
 import { Monogram } from '@/components/brand/Monogram';
 import { Screen } from '@/components/layout/Screen';
@@ -7,6 +8,8 @@ import { TabScroll } from '@/components/layout/TabScroll';
 import { Reveal } from '@/components/motion/Reveal';
 import { Badge, PressableScale, Text, toast } from '@/components/ui';
 import { useAuthStore } from '@/features/auth/auth.store';
+import { FingerprintSetupSheet } from '@/features/auth/components/FingerprintSetupSheet';
+import { removeFingerprintLogin } from '@/features/auth/fingerprint-login';
 import { useBiometricAvailability } from '@/features/auth/use-biometrics';
 import { useCartStore } from '@/features/cart/cart.store';
 import { useFavoritesStore } from '@/features/favorites/favorites.store';
@@ -22,8 +25,10 @@ export default function Profile() {
   const clearCart = useCartStore((s) => s.clear);
   const { data: orders = [] } = useOrders();
 
-  const biometricEnabled = useAuthStore((s) => s.biometricEnabled);
-  const setBiometricEnabled = useAuthStore((s) => s.setBiometricEnabled);
+  const fingerprintEmail = useAuthStore((s) => s.fingerprintEmail);
+  const setFingerprintEmail = useAuthStore((s) => s.setFingerprintEmail);
+  const fingerprintOn = !!user && fingerprintEmail === user.email;
+  const [settingUp, setSettingUp] = useState(false);
   const canUseBiometrics = useBiometricAvailability();
   const wishlistCount = useFavoritesStore((s) => s.ids.length);
 
@@ -94,10 +99,16 @@ export default function Profile() {
           {canUseBiometrics && (
             <View className="flex-row items-center gap-3 border-b border-line px-4 py-3">
               <Fingerprint size={19} color={palette.rose[500]} />
-              <Text className="flex-1">Unlock with fingerprint</Text>
+              <Text className="flex-1">Fingerprint sign-in</Text>
               <Switch
-                value={biometricEnabled}
-                onValueChange={setBiometricEnabled}
+                value={fingerprintOn}
+                onValueChange={(on) => {
+                  if (on) setSettingUp(true);
+                  else {
+                    void removeFingerprintLogin();
+                    setFingerprintEmail(null);
+                  }
+                }}
                 trackColor={{ false: palette.blush[300], true: palette.rose[400] }}
                 thumbColor={palette.white}
               />
@@ -121,6 +132,16 @@ export default function Profile() {
           <Monogram size={28} />
         </Reveal>
       </TabScroll>
+      {settingUp && user && (
+        <FingerprintSetupSheet
+          visible
+          email={user.email}
+          onDone={(enabled) => {
+            setSettingUp(false);
+            if (enabled) toast.show({ title: 'Fingerprint sign-in is on' });
+          }}
+        />
+      )}
     </Screen>
   );
 }

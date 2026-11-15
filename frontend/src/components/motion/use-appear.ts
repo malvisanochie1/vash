@@ -19,7 +19,7 @@ export { EASE_OUT } from '@/theme';
  * Deliberately avoids Reanimated layout animations (`entering`), which can
  * leave views stuck invisible when a screen mounts during a native transition.
  */
-export function useAppear({ delay = 0, duration = 560, preset = 'up', distance = 12 }: AppearOptions = {}) {
+export function useAppear({ delay = 0, duration = 700, preset = 'up', distance = 12 }: AppearOptions = {}) {
   const progress = useSharedValue(0);
 
   useEffect(() => {

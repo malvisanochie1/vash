@@ -50,7 +50,7 @@ export function TabBar({ state, navigateToTab }: BottomTabBarProps) {
     lastPillIndex = activeIndex;
     // The pill glides calmly to the new tab, stretching a little mid-way like a soft droplet.
     const distance = Math.abs(target - x.value) / segment;
-    const duration = 420 + Math.min(distance, 4) * 70;
+    const duration = 520 + Math.min(distance, 4) * 80;
     x.value = withTiming(target, { duration, easing: GLIDE });
     stretch.value = withSequence(
       withTiming(Math.min(distance, 2) * 0.22, { duration: duration * 0.45, easing: GLIDE }),

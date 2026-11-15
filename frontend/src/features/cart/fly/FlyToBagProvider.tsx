@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { palette } from '@/theme';
 import { useBagFx } from './bag-fx.store';
+import { FloatingBag } from './FloatingBag';
 
 export interface Point {
   x: number;
@@ -37,10 +38,13 @@ interface FlyContext {
 
 const Ctx = createContext<FlyContext | null>(null);
 
-const FLIGHT_MS = 1150;
+const FLIGHT_MS = 1550;
 /** First part of the flight: the product lifts gently out of its frame. */
 const LIFT = 0.2;
-const LANDED_SIZE = 34;
+/** Size the product has when it reaches the bag's mouth, before dropping in. */
+const ARRIVAL_SIZE = 46;
+/** Last part of the flight: the product sinks into the bag (which is drawn above it). */
+const SINK = 0.16;
 
 const measure = (ref: ViewRef) =>
   new Promise<Rect | null>((resolve) => {
@@ -95,7 +99,9 @@ export function FlyToBagProvider({ children }: { children: ReactNode }) {
     const { from, to } = flight;
     const p = t.value;
     const lift = Math.min(p / LIFT, 1);
-    const raw = Math.max(0, (p - LIFT) / (1 - LIFT));
+    const travelEnd = 1 - SINK;
+    const raw = Math.min(1, Math.max(0, (p - LIFT) / (travelEnd - LIFT)));
+    const sink = Math.max(0, (p - travelEnd) / SINK);
     // Ease-in-out cubic: starts unhurried, glides, settles softly.
     const k = raw < 0.5 ? 4 * raw * raw * raw : 1 - Math.pow(-2 * raw + 2, 3) / 2;
     const liftEase = 1 - Math.pow(1 - lift, 3);
@@ -108,15 +114,17 @@ export function FlyToBagProvider({ children }: { children: ReactNode }) {
     const x = (1 - k) * (1 - k) * x0 + 2 * (1 - k) * k * cx + k * k * to.x;
     const y = (1 - k) * (1 - k) * y0 + 2 * (1 - k) * k * cy + k * k * to.y;
 
-    const endScale = LANDED_SIZE / from.width;
-    const scale = (1 + 0.07 * liftEase * (1 - k)) * (1 - (1 - endScale) * k);
+    const arrival = ARRIVAL_SIZE / from.width;
+    // Travel: shrink to the bag's mouth. Sink: keep shrinking as it drops inside.
+    const travelScale = (1 + 0.07 * liftEase * (1 - k)) * (1 - (1 - arrival) * k);
+    const scale = travelScale * (1 - 0.75 * sink);
 
     return {
-      opacity: k > 0.88 ? (1 - k) / 0.12 : 1,
+      opacity: 1,
       shadowOpacity: 0.25 * liftEase * (1 - k),
       transform: [
         { translateX: x - from.width / 2 },
-        { translateY: y - from.height / 2 - 12 * liftEase * (1 - k) },
+        { translateY: y - from.height / 2 - 12 * liftEase * (1 - k) + 10 * sink },
         { scale },
         { rotate: `${-8 * k}deg` },
       ],
@@ -145,7 +153,7 @@ export function FlyToBagProvider({ children }: { children: ReactNode }) {
               shadowColor: palette.plum[900],
               shadowRadius: 18,
               shadowOffset: { width: 0, height: 10 },
-              elevation: 12,
+              elevation: 30,
             },
             style,
           ]}
@@ -153,6 +161,8 @@ export function FlyToBagProvider({ children }: { children: ReactNode }) {
           {flight.visual}
         </Animated.View>
       )}
+      {/* Drawn after (above) the flying product, so it visibly drops inside. */}
+      <FloatingBag targetRef={floatingTarget} />
     </Ctx.Provider>
   );
 }

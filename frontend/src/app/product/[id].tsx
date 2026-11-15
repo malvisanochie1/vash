@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { ChevronLeft, ShoppingBag } from 'lucide-react-native';
+import { ChevronLeft } from 'lucide-react-native';
 import { useRef, useState, type ComponentRef } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import Animated, {
@@ -14,7 +14,6 @@ import { Container } from '@/components/layout/Container';
 import { EmptyState } from '@/components/layout/EmptyState';
 import { Screen } from '@/components/layout/Screen';
 import { Button, IconButton, Text } from '@/components/ui';
-import { selectCartCount, useCartStore } from '@/features/cart/cart.store';
 import { useAddToCart } from '@/features/cart/use-add-to-cart';
 import { useAfterTransition } from '@/hooks/use-after-transition';
 import { AddToBagBar } from '@/features/catalog/components/AddToBagBar';
@@ -36,10 +35,8 @@ export default function ProductScreen() {
 
   const [variantId, setVariantId] = useState<string>();
   const [quantity, setQuantity] = useState(1);
-  const cartCount = useCartStore(selectCartCount);
   const addToCart = useAddToCart();
   const ready = useAfterTransition();
-  const bagRef = useRef<ComponentRef<typeof View>>(null);
   const galleryRef = useRef<ComponentRef<typeof View>>(null);
   const scrollY = useSharedValue(0);
 
@@ -74,7 +71,7 @@ export default function ProductScreen() {
     ...all.filter((p) => p.id !== product.id && p.category !== product.category && p.featured),
   ].slice(0, 6);
 
-  const addToBag = () => addToCart(product, { variant, quantity, imageFrame: galleryRef, target: bagRef });
+  const addToBag = () => addToCart(product, { variant, quantity, imageFrame: galleryRef });
 
   const topBar = (
     <View className="absolute inset-x-0 top-0 z-10" style={{ paddingTop: insets.top }}>
@@ -86,9 +83,9 @@ export default function ProductScreen() {
             {product.name}
           </Text>
         </Animated.View>
-        <View className="flex-row gap-2">
+        {/* The floating bag sits at the far right of this bar. */}
+        <View className="flex-row gap-2" style={{ marginRight: 60 }}>
           <HeartButton productId={product.id} size={44} />
-          <IconButton ref={bagRef} icon={ShoppingBag} badge={cartCount} accessibilityLabel="Open bag" onPress={() => router.push('/(tabs)/bag')} />
         </View>
       </Container>
     </View>

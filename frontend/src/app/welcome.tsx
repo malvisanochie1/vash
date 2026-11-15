@@ -26,15 +26,17 @@ import { PagerDots } from '@/features/onboarding/PagerDots';
 import { onboardingSlides } from '@/features/onboarding/slides';
 import { useResponsive } from '@/hooks/use-responsive';
 
-const AUTO_ADVANCE_MS = 4200;
+const AUTO_ADVANCE_MS = 4800;
 const RESUME_AFTER_TOUCH_MS = 6000;
 const SLIDES = onboardingSlides.length;
+/** The first slide is repeated at the end so the loop always slides forward, never jumps back. */
+const LOOP = [...onboardingSlides, onboardingSlides[0]!];
 /** Calm settle: the slide glides into place without bouncing. */
-const SETTLE = { damping: 28, stiffness: 120, mass: 1 };
-const AUTO_SLIDE = { duration: 950, easing: Easing.bezier(0.45, 0, 0.2, 1) };
+const SETTLE = { damping: 30, stiffness: 90, mass: 1 };
+const AUTO_SLIDE = { duration: 1400, easing: Easing.bezier(0.65, 0, 0.35, 1) };
 
 function SlideCopy({ index, width, scrollX }: { index: number; width: number; scrollX: SharedValue<number> }) {
-  const slide = onboardingSlides[index]!;
+  const slide = LOOP[index]!;
   const style = useAnimatedStyle(() => {
     const range = [(index - 0.6) * width, index * width, (index + 0.6) * width];
     return {
@@ -79,7 +81,7 @@ export default function Welcome() {
       runOnJS(pause)();
     })
     .onUpdate((e) => {
-      const min = -(SLIDES - 1) * width;
+      const min = -SLIDES * width;
       let next = dragStart.value + e.translationX;
       if (next > 0) next *= 0.3;
       if (next < min) next = min + (next - min) * 0.3;
@@ -89,17 +91,29 @@ export default function Welcome() {
       const position = -translateX.value / width;
       let target = Math.round(position);
       if (Math.abs(e.velocityX) > 450) target = e.velocityX < 0 ? Math.ceil(position) : Math.floor(position);
-      target = Math.max(0, Math.min(SLIDES - 1, target));
+      target = Math.max(0, Math.min(SLIDES, target));
       page.value = target;
-      translateX.value = withSpring(-target * width, { ...SETTLE, velocity: e.velocityX });
+      translateX.value = withSpring(-target * width, { ...SETTLE, velocity: e.velocityX }, (done) => {
+        // Landed on the repeated first slide: quietly swap to the real one.
+        if (done && target === SLIDES) {
+          page.value = 0;
+          translateX.value = 0;
+        }
+      });
     });
 
   useEffect(() => {
     const timer = setInterval(() => {
       if (Date.now() < pausedUntil.current) return;
-      const next = (page.value + 1) % SLIDES;
+      // Always slide forward; after the repeated first slide, reset invisibly.
+      const next = page.value + 1;
       page.value = next;
-      translateX.value = withTiming(-next * width, AUTO_SLIDE);
+      translateX.value = withTiming(-next * width, AUTO_SLIDE, (done) => {
+        if (done && next >= SLIDES) {
+          page.value = 0;
+          translateX.value = 0;
+        }
+      });
     }, AUTO_ADVANCE_MS);
     return () => clearInterval(timer);
   }, [page, translateX, width]);
@@ -123,22 +137,22 @@ export default function Welcome() {
 
         <Appear preset="fade" duration={600} delay={120}>
           <GestureDetector gesture={swipe}>
-            <Animated.View style={[{ flexDirection: 'row', width: width * SLIDES }, track]}>
-              {onboardingSlides.map((slide, index) => (
-                <OnboardingSlide key={slide.key} slide={slide} index={index} width={width} archWidth={archWidth} scrollX={scrollX} />
+            <Animated.View style={[{ flexDirection: 'row', width: width * LOOP.length }, track]}>
+              {LOOP.map((slide, index) => (
+                <OnboardingSlide key={`${slide.key}-${index}`} slide={slide} index={index} width={width} archWidth={archWidth} scrollX={scrollX} />
               ))}
             </Animated.View>
           </GestureDetector>
 
           <View style={{ height: Math.max(120, height * 0.15), marginTop: '6%' }}>
-            {onboardingSlides.map((slide, index) => (
-              <SlideCopy key={slide.key} index={index} width={width} scrollX={scrollX} />
+            {LOOP.map((slide, index) => (
+              <SlideCopy key={`${slide.key}-${index}`} index={index} width={width} scrollX={scrollX} />
             ))}
           </View>
         </Appear>
 
         <Appear preset="up" delay={240} style={{ width: '100%', maxWidth: 460, alignSelf: 'center', paddingHorizontal: '6%' }}>
-          <PagerDots count={onboardingSlides.length} width={width} scrollX={scrollX} />
+          <PagerDots count={SLIDES} width={width} scrollX={scrollX} loop />
           <View className="mt-5">
             <Button title="Get Started" trailingIcon={ArrowRight} onPress={() => router.push('/register')} />
           </View>

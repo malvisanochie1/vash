@@ -9,7 +9,8 @@ import { Screen } from '@/components/layout/Screen';
 import { Appear } from '@/components/motion/Appear';
 import { Button, Input, PressableScale, Text } from '@/components/ui';
 import { useAuthStore } from '@/features/auth/auth.store';
-import { authenticateWithBiometrics, useBiometricAvailability } from '@/features/auth/use-biometrics';
+import { readFingerprintLogin } from '@/features/auth/fingerprint-login';
+import { useBiometricAvailability } from '@/features/auth/use-biometrics';
 import { useCartStore } from '@/features/cart/cart.store';
 import { firstName } from '@/lib/format';
 import { api } from '@/services';
@@ -31,9 +32,9 @@ function PulseRing({ size }: { size: number }) {
 
 /** Shown after the app has been away for a while: fingerprint first, password as fallback. */
 export default function Unlock() {
-  const { user, biometricEnabled, unlock, setSession, signOut } = useAuthStore();
+  const { user, fingerprintEmail, unlock, setSession, signOut } = useAuthStore();
   const clearCart = useCartStore((s) => s.clear);
-  const canUseBiometrics = useBiometricAvailability() && biometricEnabled;
+  const canUseBiometrics = useBiometricAvailability() && !!user && fingerprintEmail === user.email;
   const [password, setPassword] = useState('');
 
   const enter = useCallback(() => {
@@ -42,8 +43,15 @@ export default function Unlock() {
   }, [unlock]);
 
   const tryBiometrics = useCallback(async () => {
-    if (await authenticateWithBiometrics()) enter();
-  }, [enter]);
+    const credentials = await readFingerprintLogin();
+    if (!credentials) return;
+    try {
+      setSession(await api.auth.login(credentials.email, credentials.password));
+      enter();
+    } catch {
+      // Password changed since fingerprint was set up — the password box below still works.
+    }
+  }, [enter, setSession]);
 
   useEffect(() => {
     if (canUseBiometrics) void tryBiometrics();
