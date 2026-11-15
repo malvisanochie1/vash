@@ -33,8 +33,15 @@ jobs:
       - run: npx tsc --noEmit
       - name: Skip until the Expo project is linked
         id: linked
-        run: node -e "process.exit(require('./app.json').expo.extra?.eas?.projectId ? 0 : 1)" && echo "ok=true" >> $GITHUB_OUTPUT || echo "ok=false" >> $GITHUB_OUTPUT
+        run: |
+          if node -e "process.exit(require('./app.json').expo.extra?.eas?.projectId ? 0 : 1)"; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "Expo project not linked yet — run the 'Setup Expo project' workflow first." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - if: steps.linked.outputs.ok == 'true'
-        run: eas update --channel preview --message "${{ github.event.head_commit.message || 'Manual update' }}" --non-interactive
+        run: eas update --channel preview --message "$MESSAGE" --non-interactive
         env:
+          MESSAGE: ${{ github.event.head_commit.message || 'Manual update' }}
           EXPO_PUBLIC_API_URL: ${{ vars.EXPO_PUBLIC_API_URL }}
