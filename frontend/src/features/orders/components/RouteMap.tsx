@@ -28,7 +28,13 @@ const segmentLengths = ROUTE.slice(1).map(([x, y], i) => Math.hypot(x - ROUTE[i]
 const TOTAL = segmentLengths.reduce((a, b) => a + b, 0);
 const PATH = ROUTE.map(([x, y], i) => `${i ? 'L' : 'M'}${x} ${y}`).join(' ');
 
-/** Stylised city map: the route draws itself and the rider glides along it. */
+/** One ride from the store to the door, plus a short rest there, in ms. */
+const RIDE_MS = 11000;
+
+/**
+ * Stylised city map. While the order is on its way the rider keeps riding
+ * from the store to your door along the route, leaving a pink trail.
+ */
 export function RouteMap({ progress }: { progress: number }) {
   const [width, setWidth] = useState(0);
   return (
@@ -41,24 +47,38 @@ export function RouteMap({ progress }: { progress: number }) {
 function RouteMapCanvas({ progress, width }: { progress: number; width: number }) {
   const height = width * (180 / 320);
   const scale = width / 320;
-  const draw = useSharedValue(0);
-  const rider = useSharedValue(0);
+  const delivered = progress >= 1;
+  const clock = useSharedValue(delivered ? 1 : 0);
   const pulse = useSharedValue(0);
 
   useEffect(() => {
-    draw.value = withTiming(1, { duration: 1400, easing: Easing.out(Easing.cubic) });
     pulse.value = withRepeat(withTiming(1, { duration: 1600 }), -1);
-  }, [draw, pulse]);
+  }, [pulse]);
 
   useEffect(() => {
-    rider.value = withTiming(progress, { duration: 1800, easing: Easing.inOut(Easing.cubic) });
-  }, [progress, rider]);
+    if (delivered) {
+      clock.value = withTiming(1, { duration: 600 });
+      return;
+    }
+    // A steady loop: ride out, rest at the door, then the next ride begins.
+    clock.value = 0;
+    clock.value = withRepeat(withTiming(1, { duration: RIDE_MS, easing: Easing.linear }), -1);
+  }, [clock, delivered]);
 
   const lengths = useMemo(() => segmentLengths, []);
 
-  const routeProps = useAnimatedProps(() => ({ strokeDashoffset: TOTAL * (1 - draw.value) }));
+  // Where along the route the rider is (0 store → 1 door), with a soft start and stop.
+  const ride = (c: number) => {
+    'worklet';
+    const p = Math.min(c / 0.82, 1);
+    return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+  };
+
+  const routeProps = useAnimatedProps(() => ({ strokeDashoffset: TOTAL * (1 - ride(clock.value)) }));
   const riderStyle = useAnimatedStyle(() => {
-    let remaining = rider.value * TOTAL;
+    const c = clock.value;
+    const at = ride(c);
+    let remaining = at * TOTAL;
     let x = ROUTE[0]![0];
     let y = ROUTE[0]![1];
     for (let i = 0; i < lengths.length; i++) {
@@ -75,7 +95,10 @@ function RouteMapCanvas({ progress, width }: { progress: number; width: number }
       x = x2;
       y = y2;
     }
-    return { transform: [{ translateX: x * scale - 17 }, { translateY: y * scale - 17 }] };
+    // Fade in at the store, fade out after resting at the door; a gentle bob while riding.
+    const opacity = delivered ? 1 : c < 0.04 ? c / 0.04 : c > 0.93 ? Math.max(0, (1 - c) / 0.07) : 1;
+    const bob = at > 0 && at < 1 ? Math.sin(c * 90) * 1.2 : 0;
+    return { opacity, transform: [{ translateX: x * scale - 17 }, { translateY: y * scale - 17 + bob }] };
   });
   const pulseStyle = useAnimatedStyle(() => ({ opacity: 1 - pulse.value, transform: [{ scale: 1 + pulse.value * 1.6 }] }));
 
